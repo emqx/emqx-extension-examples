@@ -111,7 +111,7 @@ class HookProvider(exhook_pb2_grpc.HookProviderServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     exhook_pb2_grpc.add_HookProviderServicer_to_server(HookProvider(), server)
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port('[::]:9000')
     server.start()
     server.wait_for_termination()
 

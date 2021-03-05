@@ -1,6 +1,6 @@
 # exhook-svr-python
 
-This is a demo server for emqx-exhook
+This is a demo server written in python for exhook
 
 ## Prerequisites
 
