@@ -1,0 +1,6 @@
+-sname exhook_svr
+
+-setcookie exhook_svr_cookie
+
++K true
++A30

@@ -1,0 +1,11 @@
+{application, exhook_svr,
+ [{description, "An OTP application"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, {exhook_svr_app, []}},
+  {applications, [kernel, stdlib, grpc]},
+  {env,[]},
+  {modules, []},
+  {licenses, ["Apache 2.0"]},
+  {links, []}
+ ]}.
