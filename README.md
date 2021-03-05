@@ -9,10 +9,10 @@ We are pleased to welcome contributions of examples for other  programming langu
 
 | Language | Source                                                       |
 | -------- | ------------------------------------------------------------ |
-| Erlang   | [exhook-svr-erlang](https://github.com/HJianBo/emqx-extension-examples/tree/master/exhook-svr-erlang) |
-| Golang   | [exhook-svr-go](https://github.com/HJianBo/emqx-extension-examples/tree/master/exhook-svr-go) |
-| Java     | [exhook-svr-java](https://github.com/HJianBo/emqx-extension-examples/tree/master/exhook-svr-java) |
-| Python   | [exhook-svr-python](https://github.com/HJianBo/emqx-extension-examples/tree/master/exhook-svr-python) |
+| Erlang   | [exhook-svr-erlang](https://github.com/emqx/emqx-extension-examples/tree/master/exhook-svr-erlang) |
+| Golang   | [exhook-svr-go](https://github.com/emqx/emqx-extension-examples/tree/master/exhook-svr-go) |
+| Java     | [exhook-svr-java](https://github.com/emqx/emqx-extension-examples/tree/master/exhook-svr-java) |
+| Python   | [exhook-svr-python](https://github.com/emqx/emqx-extension-examples/tree/master/exhook-svr-python) |
 
 
 
