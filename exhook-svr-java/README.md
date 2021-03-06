@@ -1,5 +1,7 @@
 # exhook-svr-java
 
+This is a demo server written in java for exhook
+
 ## Prerequisites
 
 - JDK version 8 or higher

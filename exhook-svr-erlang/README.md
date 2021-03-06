@@ -1,9 +1,21 @@
-exhook_svr
-=====
+# exhook-svr-erlang
 
-An OTP application
+This is a demo server written in erlang for exhook
 
-Build
------
+## Prerequisites
 
-    $ rebar3 compile
+- OTP 20+
+
+
+## Run
+
+Pull dependencies and Compile project:
+
+```
+make
+```
+
+Run Server
+```
+make shell
+```
