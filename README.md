@@ -20,8 +20,8 @@ We are pleased to welcome contributions of examples for other  programming langu
 
 | Language | Source |
 | -------- | ------ |
-| Erlang   | -      |
+| Erlang   | [exproto-svr-erlang](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-erlang) |
 | Golang   | -      |
-| Java     | -      |
+| Java     | [exproto-svr-java](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-java) |
 | Python   | -      |
 
