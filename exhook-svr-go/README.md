@@ -4,8 +4,8 @@ This is a demo server written in java for exhook
 
 ## Prerequisites
 
-- Go (any one of the three latest major)
-- Protocol buffer **compiler**, `protoc`
+- [Go](https://golang.org) (any one of the three latest major)
+- [Protocol buffer](https://developers.google.com/protocol-buffers) **compiler**, `protoc`
     For installation instructions, see
     [Protocol Buffer Compiler Installation](https://grpc.io/docs/protoc-installation/).
 - **Go plugins** for the protocol compiler:
