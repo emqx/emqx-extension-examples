@@ -88,63 +88,50 @@ public final class ConnectionHandlerGrpc {
               emqx.exproto.v1.Exproto.EmptySuccess.getDefaultInstance()))
           .build();
 
-  /**
-   * Creates a new async stub that supports all call types for the service
-   */
+
   public static ConnectionHandlerStub newStub(io.grpc.Channel channel) {
     return new ConnectionHandlerStub(channel);
   }
 
-  /**
-   * Creates a new blocking-style stub that supports unary and streaming output calls on the service
-   */
+
   public static ConnectionHandlerBlockingStub newBlockingStub(
       io.grpc.Channel channel) {
     return new ConnectionHandlerBlockingStub(channel);
   }
 
-  /**
-   * Creates a new ListenableFuture-style stub that supports unary calls on the service
-   */
+
   public static ConnectionHandlerFutureStub newFutureStub(
       io.grpc.Channel channel) {
     return new ConnectionHandlerFutureStub(channel);
   }
 
-  /**
-   */
   public static abstract class ConnectionHandlerImplBase implements io.grpc.BindableService {
 
-    /**
-     */
+
     public void onSocketCreated(emqx.exproto.v1.Exproto.SocketCreatedRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.EmptySuccess> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_ON_SOCKET_CREATED, responseObserver);
     }
 
-    /**
-     */
+
     public void onSocketClosed(emqx.exproto.v1.Exproto.SocketClosedRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.EmptySuccess> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_ON_SOCKET_CLOSED, responseObserver);
     }
 
-    /**
-     */
+
     public void onReceivedBytes(emqx.exproto.v1.Exproto.ReceivedBytesRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.EmptySuccess> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_ON_RECEIVED_BYTES, responseObserver);
     }
 
-    /**
-     */
+
     public void onTimerTimeout(emqx.exproto.v1.Exproto.TimerTimeoutRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.EmptySuccess> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_ON_TIMER_TIMEOUT, responseObserver);
     }
 
-    /**
-     */
+
     public void onReceivedMessages(emqx.exproto.v1.Exproto.ReceivedMessagesRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.EmptySuccess> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_ON_RECEIVED_MESSAGES, responseObserver);
@@ -209,40 +196,35 @@ public final class ConnectionHandlerGrpc {
       return new ConnectionHandlerStub(channel, callOptions);
     }
 
-    /**
-     */
+
     public void onSocketCreated(emqx.exproto.v1.Exproto.SocketCreatedRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.EmptySuccess> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_ON_SOCKET_CREATED, getCallOptions()), request, responseObserver);
     }
 
-    /**
-     */
+
     public void onSocketClosed(emqx.exproto.v1.Exproto.SocketClosedRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.EmptySuccess> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_ON_SOCKET_CLOSED, getCallOptions()), request, responseObserver);
     }
 
-    /**
-     */
+
     public void onReceivedBytes(emqx.exproto.v1.Exproto.ReceivedBytesRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.EmptySuccess> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_ON_RECEIVED_BYTES, getCallOptions()), request, responseObserver);
     }
 
-    /**
-     */
+
     public void onTimerTimeout(emqx.exproto.v1.Exproto.TimerTimeoutRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.EmptySuccess> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_ON_TIMER_TIMEOUT, getCallOptions()), request, responseObserver);
     }
 
-    /**
-     */
+
     public void onReceivedMessages(emqx.exproto.v1.Exproto.ReceivedMessagesRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.EmptySuccess> responseObserver) {
       asyncUnaryCall(
@@ -250,8 +232,6 @@ public final class ConnectionHandlerGrpc {
     }
   }
 
-  /**
-   */
   public static final class ConnectionHandlerBlockingStub extends io.grpc.stub.AbstractStub<ConnectionHandlerBlockingStub> {
     private ConnectionHandlerBlockingStub(io.grpc.Channel channel) {
       super(channel);
@@ -268,44 +248,37 @@ public final class ConnectionHandlerGrpc {
       return new ConnectionHandlerBlockingStub(channel, callOptions);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.EmptySuccess onSocketCreated(emqx.exproto.v1.Exproto.SocketCreatedRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_ON_SOCKET_CREATED, getCallOptions(), request);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.EmptySuccess onSocketClosed(emqx.exproto.v1.Exproto.SocketClosedRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_ON_SOCKET_CLOSED, getCallOptions(), request);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.EmptySuccess onReceivedBytes(emqx.exproto.v1.Exproto.ReceivedBytesRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_ON_RECEIVED_BYTES, getCallOptions(), request);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.EmptySuccess onTimerTimeout(emqx.exproto.v1.Exproto.TimerTimeoutRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_ON_TIMER_TIMEOUT, getCallOptions(), request);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.EmptySuccess onReceivedMessages(emqx.exproto.v1.Exproto.ReceivedMessagesRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_ON_RECEIVED_MESSAGES, getCallOptions(), request);
     }
   }
 
-  /**
-   */
   public static final class ConnectionHandlerFutureStub extends io.grpc.stub.AbstractStub<ConnectionHandlerFutureStub> {
     private ConnectionHandlerFutureStub(io.grpc.Channel channel) {
       super(channel);
@@ -322,40 +295,35 @@ public final class ConnectionHandlerGrpc {
       return new ConnectionHandlerFutureStub(channel, callOptions);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.EmptySuccess> onSocketCreated(
         emqx.exproto.v1.Exproto.SocketCreatedRequest request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_ON_SOCKET_CREATED, getCallOptions()), request);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.EmptySuccess> onSocketClosed(
         emqx.exproto.v1.Exproto.SocketClosedRequest request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_ON_SOCKET_CLOSED, getCallOptions()), request);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.EmptySuccess> onReceivedBytes(
         emqx.exproto.v1.Exproto.ReceivedBytesRequest request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_ON_RECEIVED_BYTES, getCallOptions()), request);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.EmptySuccess> onTimerTimeout(
         emqx.exproto.v1.Exproto.TimerTimeoutRequest request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_ON_TIMER_TIMEOUT, getCallOptions()), request);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.EmptySuccess> onReceivedMessages(
         emqx.exproto.v1.Exproto.ReceivedMessagesRequest request) {
       return futureUnaryCall(

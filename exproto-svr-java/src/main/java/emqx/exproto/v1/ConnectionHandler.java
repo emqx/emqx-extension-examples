@@ -2,11 +2,8 @@ package emqx.exproto.v1;
 
 import io.grpc.stub.StreamObserver;
 
-import java.util.List;
-
 /**
- * @author wangwenhai
- * @date 2020/10/13
+ * @author wangwenhai  2020/10/13
  * File description:
  */
 public class ConnectionHandler extends ConnectionHandlerGrpc.ConnectionHandlerImplBase {
@@ -39,7 +36,6 @@ public class ConnectionHandler extends ConnectionHandlerGrpc.ConnectionHandlerIm
 
     @Override
     public void onReceivedBytes(Exproto.ReceivedBytesRequest request, StreamObserver<Exproto.EmptySuccess> responseObserver) {
-
         String data = request.getBytes().toStringUtf8();
         if (data.startsWith("[") && data.endsWith("]")) {
             String[] th = data.substring(1, data.length() - 1).split(",");

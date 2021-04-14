@@ -116,81 +116,60 @@ public final class ConnectionAdapterGrpc {
               emqx.exproto.v1.Exproto.CodeResponse.getDefaultInstance()))
           .build();
 
-  /**
-   * Creates a new async stub that supports all call types for the service
-   */
+
   public static ConnectionAdapterStub newStub(io.grpc.Channel channel) {
     return new ConnectionAdapterStub(channel);
   }
 
-  /**
-   * Creates a new blocking-style stub that supports unary and streaming output calls on the service
-   */
   public static ConnectionAdapterBlockingStub newBlockingStub(
       io.grpc.Channel channel) {
     return new ConnectionAdapterBlockingStub(channel);
   }
 
-  /**
-   * Creates a new ListenableFuture-style stub that supports unary calls on the service
-   */
   public static ConnectionAdapterFutureStub newFutureStub(
       io.grpc.Channel channel) {
     return new ConnectionAdapterFutureStub(channel);
   }
 
-  /**
-   * <pre>
-   * The Broker side serivce. It provides a set of APIs to
-   * handle a protcol access
-   * </pre>
-   */
   public static abstract class ConnectionAdapterImplBase implements io.grpc.BindableService {
 
-    /**
-     */
+
     public void send(emqx.exproto.v1.Exproto.SendBytesRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_SEND, responseObserver);
     }
 
-    /**
-     */
+
     public void close(emqx.exproto.v1.Exproto.CloseSocketRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_CLOSE, responseObserver);
     }
 
-    /**
-     */
+
     public void authenticate(emqx.exproto.v1.Exproto.AuthenticateRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_AUTHENTICATE, responseObserver);
     }
 
-    /**
-     */
+
     public void startTimer(emqx.exproto.v1.Exproto.TimerRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_START_TIMER, responseObserver);
     }
 
-    /**
-     */
+
     public void publish(emqx.exproto.v1.Exproto.PublishRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_PUBLISH, responseObserver);
     }
 
-    /**
-     */
+
     public void subscribe(emqx.exproto.v1.Exproto.SubscribeRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_SUBSCRIBE, responseObserver);
     }
 
-    /**
-     */
+
     public void unsubscribe(emqx.exproto.v1.Exproto.UnsubscribeRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_UNSUBSCRIBE, responseObserver);
@@ -273,56 +252,49 @@ public final class ConnectionAdapterGrpc {
       return new ConnectionAdapterStub(channel, callOptions);
     }
 
-    /**
-     */
+
     public void send(emqx.exproto.v1.Exproto.SendBytesRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_SEND, getCallOptions()), request, responseObserver);
     }
 
-    /**
-     */
+
     public void close(emqx.exproto.v1.Exproto.CloseSocketRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_CLOSE, getCallOptions()), request, responseObserver);
     }
 
-    /**
-     */
+
     public void authenticate(emqx.exproto.v1.Exproto.AuthenticateRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_AUTHENTICATE, getCallOptions()), request, responseObserver);
     }
 
-    /**
-     */
+
     public void startTimer(emqx.exproto.v1.Exproto.TimerRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_START_TIMER, getCallOptions()), request, responseObserver);
     }
 
-    /**
-     */
+
     public void publish(emqx.exproto.v1.Exproto.PublishRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_PUBLISH, getCallOptions()), request, responseObserver);
     }
 
-    /**
-     */
+
     public void subscribe(emqx.exproto.v1.Exproto.SubscribeRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_SUBSCRIBE, getCallOptions()), request, responseObserver);
     }
 
-    /**
-     */
+
     public void unsubscribe(emqx.exproto.v1.Exproto.UnsubscribeRequest request,
         io.grpc.stub.StreamObserver<emqx.exproto.v1.Exproto.CodeResponse> responseObserver) {
       asyncUnaryCall(
@@ -352,50 +324,43 @@ public final class ConnectionAdapterGrpc {
       return new ConnectionAdapterBlockingStub(channel, callOptions);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.CodeResponse send(emqx.exproto.v1.Exproto.SendBytesRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_SEND, getCallOptions(), request);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.CodeResponse close(emqx.exproto.v1.Exproto.CloseSocketRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_CLOSE, getCallOptions(), request);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.CodeResponse authenticate(emqx.exproto.v1.Exproto.AuthenticateRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_AUTHENTICATE, getCallOptions(), request);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.CodeResponse startTimer(emqx.exproto.v1.Exproto.TimerRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_START_TIMER, getCallOptions(), request);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.CodeResponse publish(emqx.exproto.v1.Exproto.PublishRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_PUBLISH, getCallOptions(), request);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.CodeResponse subscribe(emqx.exproto.v1.Exproto.SubscribeRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_SUBSCRIBE, getCallOptions(), request);
     }
 
-    /**
-     */
+
     public emqx.exproto.v1.Exproto.CodeResponse unsubscribe(emqx.exproto.v1.Exproto.UnsubscribeRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_UNSUBSCRIBE, getCallOptions(), request);
@@ -424,56 +389,49 @@ public final class ConnectionAdapterGrpc {
       return new ConnectionAdapterFutureStub(channel, callOptions);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.CodeResponse> send(
         emqx.exproto.v1.Exproto.SendBytesRequest request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_SEND, getCallOptions()), request);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.CodeResponse> close(
         emqx.exproto.v1.Exproto.CloseSocketRequest request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_CLOSE, getCallOptions()), request);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.CodeResponse> authenticate(
         emqx.exproto.v1.Exproto.AuthenticateRequest request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_AUTHENTICATE, getCallOptions()), request);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.CodeResponse> startTimer(
         emqx.exproto.v1.Exproto.TimerRequest request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_START_TIMER, getCallOptions()), request);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.CodeResponse> publish(
         emqx.exproto.v1.Exproto.PublishRequest request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_PUBLISH, getCallOptions()), request);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.CodeResponse> subscribe(
         emqx.exproto.v1.Exproto.SubscribeRequest request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_SUBSCRIBE, getCallOptions()), request);
     }
 
-    /**
-     */
+
     public com.google.common.util.concurrent.ListenableFuture<emqx.exproto.v1.Exproto.CodeResponse> unsubscribe(
         emqx.exproto.v1.Exproto.UnsubscribeRequest request) {
       return futureUnaryCall(
