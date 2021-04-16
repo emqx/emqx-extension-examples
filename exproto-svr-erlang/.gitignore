@@ -18,3 +18,8 @@ _build
 rebar3.crashdump
 *~
 rebar.lock
+apps/exproto_svr/src/emqx_exproto_pb.erl
+apps/exproto_svr/src/emqx_exproto_v_1_connection_adapter_bhvr.erl
+apps/exproto_svr/src/emqx_exproto_v_1_connection_adapter_client.erl
+apps/exproto_svr/src/emqx_exproto_v_1_connection_handler_bhvr.erl
+apps/exproto_svr/src/emqx_exproto_v_1_connection_handler_client.erl

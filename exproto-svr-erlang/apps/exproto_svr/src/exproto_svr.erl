@@ -140,7 +140,7 @@ on_received_messages(Stream, _Md) ->
 %%--------------------------------------------------------------------
 %% The Protocol Example:
 %%  CONN:
-%%   {"type": 1, "clientinfo": {...}}
+%%   {"type": 1, "clientinfo": {...}, "password": "xyz"}
 %%
 %%  CONNACK:
 %%   {"type": 2, "code": 0}
@@ -222,8 +222,8 @@ handle_out(Conn, ?TYPE_DISCONNECT) ->
 
 frame_connect(ClientInfo, Password) ->
     jsx:encode(#{type => ?TYPE_CONNECT,
-                       clientinfo => ClientInfo,
-                       password => Password}).
+                 clientinfo => ClientInfo,
+                 password => Password}).
 frame_connack(Code) ->
     jsx:encode(#{type => ?TYPE_CONNACK, code => Code}).
 
