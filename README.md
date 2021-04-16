@@ -25,3 +25,17 @@ We are pleased to welcome contributions of examples for other  programming langu
 | Java     | [exproto-svr-java](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-java) |
 | Python   | -      |
 
+
+## For enterprise edition
+
+**emqx-exhook**
+
+Same as mentioned above.
+
+**emqx-exproto**
+
+| Language | Source |
+| -------- | ------ |
+| Golang   | -      |
+| Java     | [exproto-svr-java](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-java-for-enterpise-e4.2) |
+| Python   | -      |
