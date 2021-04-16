@@ -34,6 +34,8 @@ Same as mentioned above.
 
 **emqx-exproto**
 
+For e4.2.5+:
+
 | Language | Source |
 | -------- | ------ |
 | Golang   | -      |
