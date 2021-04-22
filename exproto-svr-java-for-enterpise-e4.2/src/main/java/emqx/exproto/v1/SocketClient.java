@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Date;
 
 
 public class SocketClient {
@@ -19,6 +20,7 @@ public class SocketClient {
             outToServer.close();
             out.close();
             client.close();
+            System.out.println("Message send success:" + new Date());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -4,18 +4,19 @@ import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
-class TestClient {
+class TestGrpcClient {
 
     public static void main(String[] args) throws Exception {
-        String target = "127.0.0.1:9001";
-        Exproto.PublishRequest request = Exproto.PublishRequest.newBuilder()
+        String target = "127.0.0.1:9100";
+        Exproto.PublishRequest publishRequest = Exproto.PublishRequest.newBuilder()
                 .setTopic("/test")
                 .setQos(0)
                 .setPayload(ByteString.copyFromUtf8("hello")).build();
         ManagedChannel channel = ManagedChannelBuilder.forTarget(target)
+                .usePlaintext()
                 .build();
-        ConnectionAdapterGrpc.ConnectionAdapterBlockingStub blockingStub = ConnectionAdapterGrpc.newBlockingStub(channel);
-        Exproto.CodeResponse response = blockingStub.publish(request);
+        ConnectionAdapterGrpc.ConnectionAdapterFutureStub futureStub = ConnectionAdapterGrpc.newFutureStub(channel);
+        Exproto.CodeResponse response = futureStub.publish(publishRequest).get();
         System.out.println("Response:" + response.getMessage());
     }
 }
