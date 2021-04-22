@@ -10,6 +10,8 @@ import java.util.Date;
 public class SocketClient {
     public static void main(String[] args) {
         try {
+            System.out.println("Socket starting...:");
+
             Socket client = new Socket("127.0.0.1", 7993);
             OutputStream outToServer = client.getOutputStream();
             DataOutputStream out = new DataOutputStream(outToServer);

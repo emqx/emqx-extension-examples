@@ -13,7 +13,6 @@ public class TestGRpcServer {
         int port = 9001;
         Server server = NettyServerBuilder.forPort(port)
                 .addService(new ConnectionHandler())
-                .addService(new ConnectionAdapter())
                 .build()
                 .start();
         logger.info("Server started, listening on " + port);
