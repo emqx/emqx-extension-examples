@@ -392,7 +392,7 @@ EMQ X 以一个客户端在其生命周期内的关键活动为基础，预置�
 
 > 关于钩子系统请参考这里: https://docs.emqx.net/enterprise/latest/cn/advanced/hooks.html
 
-EMQX的GRPC模块就是日通过钩子来触发RPC机制，进而进行回调用户的函数。基本架构图如下所示：
+EMQX的GRPC模块就是通过钩子来触发RPC机制，进而进行回调用户的函数。基本架构图如下所示：
 
 ![img](static/4.jpeg)
 
