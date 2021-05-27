@@ -161,7 +161,10 @@ public class ExServer {
         @Override
         public void onClientAuthenticate(ClientAuthenticateRequest request, StreamObserver<ValuedResponse> responseObserver) {
             DEBUG("onClientAuthenticate", request);
-            ValuedResponse reply = ValuedResponse.newBuilder().setBoolResult(true).build();
+            ValuedResponse reply = ValuedResponse.newBuilder()
+                                                 .setBoolResult(true)
+                                                 .setType(ValuedResponse.ResponsedType.STOP_AND_RETURN)
+                                                 .build();
             responseObserver.onNext(reply);
             responseObserver.onCompleted();
         }
@@ -169,7 +172,11 @@ public class ExServer {
         @Override
         public void onClientCheckAcl(ClientCheckAclRequest request, StreamObserver<ValuedResponse> responseObserver) {
             DEBUG("onClientCheckAcl", request);
-            ValuedResponse reply = ValuedResponse.newBuilder().setBoolResult(true).build();
+            ValuedResponse reply = ValuedResponse.newBuilder()
+                                                 .setBoolResult(true)
+                                                 .setType(ValuedResponse.ResponsedType.STOP_AND_RETURN)
+                                                 .build();
+
             responseObserver.onNext(reply);
             responseObserver.onCompleted();
         }
