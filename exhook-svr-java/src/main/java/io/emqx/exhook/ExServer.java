@@ -19,15 +19,13 @@ package io.emqx.exhook;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
+import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-/**
- * Server that manages startup/shutdown of a {@code Greeter} server.
- */
 public class ExServer {
     private static final Logger logger = Logger.getLogger(ExServer.class.getName());
 
@@ -256,7 +254,20 @@ public class ExServer {
         @Override
         public void onMessagePublish(MessagePublishRequest request, StreamObserver<ValuedResponse> responseObserver) {
             DEBUG("onMessagePublish", request);
-            ValuedResponse reply = ValuedResponse.newBuilder().setMessage(request.getMessage()).build();
+
+            ByteString bstr = ByteString.copyFromUtf8("hardcode payload by exhook-svr-java :)");
+
+            Message nmsg = Message.newBuilder()
+                                  .setId     (request.getMessage().getId())
+                                  .setNode   (request.getMessage().getNode())
+                                  .setFrom   (request.getMessage().getFrom())
+                                  .setTopic  (request.getMessage().getTopic())
+                                  .setPayload(bstr).build();
+
+
+            ValuedResponse reply = ValuedResponse.newBuilder()
+                                                 .setType(ValuedResponse.ResponsedType.STOP_AND_RETURN)
+                                                 .setMessage(nmsg).build();
             responseObserver.onNext(reply);
             responseObserver.onCompleted();
         }

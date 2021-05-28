@@ -15,6 +15,7 @@
 
 from concurrent import futures
 import logging
+from multiprocessing.sharedctypes import Value
 
 import grpc
 
@@ -64,10 +65,12 @@ class HookProvider(exhook_pb2_grpc.HookProviderServicer):
         return exhook_pb2.EmptySuccess()
 
     def OnClientAuthenticate(self, request, context):
-        return exhook_pb2.ValuedResponse()
+        reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", bool_result=True)
+        return reply
 
     def OnClientCheckAcl(self, request, context):
-        return exhook_pb2.ValuedResponse()
+        reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", bool_result=True)
+        return reply
 
     def OnClientSubscribe(self, request, context):
         return exhook_pb2.EmptySuccess()
@@ -97,7 +100,11 @@ class HookProvider(exhook_pb2_grpc.HookProviderServicer):
         return exhook_pb2.EmptySuccess()
 
     def OnMessagePublish(self, request, context):
-        return exhook_pb2.ValuedResponse()
+        nmsg = request.message
+        nmsg.payload = b"hardcode payload by exhook-svr-python :)"
+
+        reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", message=nmsg)
+        return reply
 
     def OnMessageDelivered(self, request, context):
         return exhook_pb2.EmptySuccess()
@@ -113,6 +120,9 @@ def serve():
     exhook_pb2_grpc.add_HookProviderServicer_to_server(HookProvider(), server)
     server.add_insecure_port('[::]:9000')
     server.start()
+
+    print("Started gRPC server on [::]:9000")
+
     server.wait_for_termination()
 
 

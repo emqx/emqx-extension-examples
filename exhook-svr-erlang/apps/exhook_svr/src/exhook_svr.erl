@@ -112,7 +112,7 @@ on_client_disconnected(_Req, Md) ->
      | {error, grpc_cowboy_h:error_response()}.
 on_client_authenticate(_Req, Md) ->
     ets:update_counter(exhook_stats, ?FUNCTION_NAME, {2, 1}, {?FUNCTION_NAME, 0}),
-    {ok, #{type => 'IGNORE'}, Md}.
+    {ok, #{type => 'STOP_AND_RETURN', value => {bool_result, true}}, Md}.
 
 -spec on_client_check_acl(emqx_exhook_pb:client_check_acl_request(), grpc:metadata())
     -> {ok, emqx_exhook_pb:valued_response(), grpc:metadata()}
@@ -187,9 +187,10 @@ on_session_terminated(_Req, Md) ->
 -spec on_message_publish(emqx_exhook_pb:message_publish_request(), grpc:metadata())
     -> {ok, emqx_exhook_pb:valued_response(), grpc:metadata()}
      | {error, grpc_cowboy_h:error_response()}.
-on_message_publish(_Req, Md) ->
+on_message_publish(_Req = #{message := Msg}, Md) ->
     ets:update_counter(exhook_stats, ?FUNCTION_NAME, {2, 1}, {?FUNCTION_NAME, 0}),
-    {ok, #{}, Md}.
+    NMsg = Msg#{payload => <<"hardcode payload by exhook-svr-erlang :)">>},
+    {ok, #{type => 'STOP_AND_RETURN', value => {message, NMsg}}, Md}.
 
 -spec on_message_delivered(emqx_exhook_pb:message_delivered_request(), grpc:metadata())
     -> {ok, emqx_exhook_pb:empty_success(), grpc:metadata()}
