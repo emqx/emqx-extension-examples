@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2020 EMQ Technologies Co., Ltd. All Rights Reserved.
+// Copyright (c) 2020-2021 EMQ Technologies Co., Ltd. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,12 @@
 //------------------------------------------------------------------------------
 
 syntax = "proto3";
+
+option csharp_namespace = "Emqx.Exhook.V1";
+option go_package = "emqx.io/grpc/exhook";
+option java_multiple_files = true;
+option java_package = "io.emqx.exhook";
+option java_outer_classname = "EmqxExHookProto";
 
 package emqx.exhook.v1;
 
@@ -231,14 +237,14 @@ message EmptySuccess { }
 message ValuedResponse {
 
   // The responsed value type
-  //  - ignore: Ignore the responsed value
   //  - contiune: Use the responsed value and execute the next hook
+  //  - ignore: Ignore the responsed value
   //  - stop_and_return: Use the responsed value and stop the chain executing
   enum ResponsedType {
 
-    IGNORE = 0;
+    CONTINUE = 0;
 
-    CONTINUE = 1;
+    IGNORE = 1;
 
     STOP_AND_RETURN = 2;
   }
@@ -329,6 +335,12 @@ message ClientInfo {
   bool  is_superuser = 9;
 
   bool  anonymous = 10;
+
+  // common name of client TLS cert
+  string cn = 11;
+
+  // subject of client TLS cert
+  string dn = 12;
 }
 
 message Message {

@@ -4,11 +4,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Date;
 
 
 public class SocketClient {
     public static void main(String[] args) {
         try {
+            System.out.println("Socket starting...:");
+
             Socket client = new Socket("127.0.0.1", 7993);
             OutputStream outToServer = client.getOutputStream();
             DataOutputStream out = new DataOutputStream(outToServer);
@@ -19,6 +22,7 @@ public class SocketClient {
             outToServer.close();
             out.close();
             client.close();
+            System.out.println("Message send success:" + new Date());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,13 @@
+# Exproto-svr-java 快速指南
+
+## 前提
+
+1. 仅支持企业版 e4.2.5+。该项目基于企业版 e4.2.5+ 提供的 `exproto.proto` 编写。
+2. JDK 1.8 +
+
 ## 新建项目
 
-首先新建一个普通 maven 项目，JDK 版本1.8以上。
+首先新建一个普通 maven 项目
 
 ## 依赖配置
 
@@ -102,7 +109,7 @@ pom.xml 中依赖配置如下：
 
 ## 代码生成
 
-然后需要通过GRPC的协议规范文件来生成代码 ,在此处获取:https://github.com/emqx/emqx-exproto/blob/dev/e4.2.0/priv/protos/exproto.proto 最新版协议规范描述文件,把 proto文件复制到项目目录下和 java 目录平行的 proto 文件夹内,然后运行命令:
+然后需要通过GRPC的协议规范文件来生成代码, 在此处获取: [exproto.proto](https://github.com/emqx/emqx-exproto/blob/e4.2.5/priv/protos/exproto.proto) 最新版协议规范描述文件, 把 proto 文件复制到项目目录下和 java 目录平行的 proto 文件夹内, 然后运行命令:
 
 ```shell
 mvn compile
@@ -385,7 +392,7 @@ EMQ X 以一个客户端在其生命周期内的关键活动为基础，预置�
 
 > 关于钩子系统请参考这里: https://docs.emqx.net/enterprise/latest/cn/advanced/hooks.html
 
-EMQX的GRPC模块就是日通过钩子来触发RPC机制，进而进行回调用户的函数。基本架构图如下所示：
+EMQX的GRPC模块就是通过钩子来触发RPC机制，进而进行回调用户的函数。基本架构图如下所示：
 
 ![img](static/4.jpeg)
 
