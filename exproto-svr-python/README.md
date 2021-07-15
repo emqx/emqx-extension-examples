@@ -5,7 +5,7 @@
 1. 仅支持开源版 4.3+。
 2. JDK 1.8 +
 3. 目前官方的4.3.0-4.3.5的版本尚存在bug，需要补丁。以下是加入补丁之后的Demo。
-4. 如果你使用的时候，官方还没有修复bug，可将[补丁](path/grpc_client.beam)放到你Emqx的lib/grpc-0.6.2/ebin下。
+4. 如果你使用的时候，官方还没有修复bug，可将[补丁](patch/grpc_client.beam)放到你Emqx的lib/grpc-0.6.2/ebin下。
 
 ## 创建python虚拟环境
 
