@@ -18,12 +18,12 @@ We are pleased to welcome contributions of examples for other  programming langu
 
 **emqx-exproto**
 
-| Language | Source |
-| -------- | ------ |
+| Language | Source                                                       |
+| -------- | ------------------------------------------------------------ |
 | Erlang   | [exproto-svr-erlang](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-erlang) |
-| Golang   | -      |
-| Java     | [exproto-svr-java](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-java) |
-| Python   | -      |
+| Golang   | -                                                            |
+| Java     | [exproto-svr-java](exproto-svr-java/README.md)               |
+| Python   | [exproto-svr-python](exproto-svr-python/README.md)           |
 
 
 ## For enterprise edition
