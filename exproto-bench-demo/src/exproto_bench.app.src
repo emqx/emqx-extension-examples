@@ -1,0 +1,10 @@
+{application, exproto_bench,
+ [{description, "ExProto Benchmark Tool"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {applications, [kernel, stdlib, getopt, jsx]},
+  {env,[]},
+  {modules, []},
+  {licenses, ["Apache 2.0"]},
+  {links, []}
+ ]}.

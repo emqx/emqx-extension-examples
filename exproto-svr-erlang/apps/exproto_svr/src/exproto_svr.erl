@@ -162,7 +162,11 @@ on_received_messages(Stream, _Md) ->
 %%--------------------------------------------------------------------
 
 handle_in(Conn, ?TYPE_CONNECT, #{<<"clientinfo">> := ClientInfo, <<"password">> := Password}) ->
-    NClientInfo = maps:from_list([{binary_to_atom(K, utf8), V} || {K, V} <- maps:to_list(ClientInfo)]),
+    NClientInfo0 = maps:from_list([{binary_to_atom(K, utf8), V} || {K, V} <- maps:to_list(ClientInfo)]),
+    NClientInfo = NClientInfo0#{
+                    proto_name => <<"exproto-demo">>,
+                    proto_ver => <<"1.0">>
+                   },
     case ?authenticate(#{conn => Conn, clientinfo => NClientInfo, password => Password}) of
         {ok, #{code := 'SUCCESS'}, _} ->
             case maps:get(keepalive, NClientInfo, 0) of
@@ -185,6 +189,8 @@ handle_in(Conn, ?TYPE_PUBLISH, #{<<"topic">> := Topic,
         _ ->
             handle_out(Conn, ?TYPE_PUBACK, 1)
     end;
+handle_in(Conn, ?TYPE_PUBACK, #{<<"code">> := _Code}) ->
+    ok;
 handle_in(Conn, ?TYPE_SUBSCRIBE, #{<<"qos">> := Qos, <<"topic">> := Topic}) ->
     case ?subscribe(#{conn => Conn, topic => Topic, qos => Qos}) of
         {ok, #{code := 'SUCCESS'}, _} ->
