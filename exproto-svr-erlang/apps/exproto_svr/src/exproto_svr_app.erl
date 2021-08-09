@@ -14,6 +14,8 @@
 
 -export([stats/0]).
 
+-define(DEFAULT_SERVER_ADDR, "http://127.0.0.1:9100").
+
 start(_StartType, _StartArgs) ->
     %% grpc server
     Services = #{protos => [emqx_exproto_pb],
@@ -24,8 +26,10 @@ start(_StartType, _StartArgs) ->
     Options = [],
     {ok, _} = grpc:start_server(exproto_svr, 9001, Services, Options),
     io:format("Start service exproto_svr on 9001 successfully!~n", []),
+
     %% grpc client
-    grpc_client_sup:create_channel_pool(ct_test_channel, "http://127.0.0.1:9100", #{}),
+    Addr = env(server_addr, ?DEFAULT_SERVER_ADDR),
+    grpc_client_sup:create_channel_pool(ct_test_channel, Addr, #{}),
     %% magic line
     _ = exproto_svr:module_info(),
     %% counter
@@ -49,3 +53,9 @@ init([]) ->
                  period => 1},
     ChildSpecs = [],
     {ok, {SupFlags, ChildSpecs}}.
+
+env(Key, Def) ->
+    case application:get_env(exproto_svr, Key) of
+        {ok, Val} -> Val;
+        undefined -> Def
+    end.
