@@ -106,10 +106,36 @@ on_received_bytes(Stream, _Md) ->
       fun(Reqs) ->
         lists:foreach(
           fun(#{conn := Conn, bytes := Bytes}) ->
-            #{<<"type">> := Type} = Params = jsx:decode(Bytes, [return_maps]),
-            _ = handle_in(Conn, Type, Params)
+            Remain = get_conn_recv_buffer(Conn),
+            {NRemain, RawPackets} = parse_all_bytes(<<Remain/binary,
+                                                      Bytes/binary>>),
+            _ = put_conn_recv_buffer(Conn, NRemain),
+            lists:foreach(fun(RawPacket) ->
+                #{<<"type">> := Type} = Params
+                                      = jsx:decode(RawPacket, [return_maps]),
+
+                _ = handle_in(Conn, Type, Params)
+            end, RawPackets)
           end, Reqs)
       end).
+
+get_conn_recv_buffer(Conn) ->
+    case get({Conn, recvbuf}) of
+        undefined -> <<>>;
+        Bytes -> Bytes
+    end.
+
+put_conn_recv_buffer(Conn, Bytes) ->
+    put({Conn, recvbuf}, Bytes).
+
+parse_all_bytes(Bin) ->
+    parse_all_bytes(Bin, <<>>, []).
+parse_all_bytes(<<"##", Remain/binary>>, Buf, Acc) ->
+    parse_all_bytes(Remain, <<>>, [Buf|Acc]);
+parse_all_bytes(<<B, Remain/binary>>, Buf, Acc) ->
+    parse_all_bytes(Remain, <<Buf/binary, B>>, Acc);
+parse_all_bytes(<<>>, Buf, Acc) ->
+    {Buf, Acc}.
 
 -spec on_timer_timeout(grpc_stream:stream(), grpc:metadata())
     -> {ok, grpc_stream:stream()}.
@@ -189,7 +215,7 @@ handle_in(Conn, ?TYPE_PUBLISH, #{<<"topic">> := Topic,
         _ ->
             handle_out(Conn, ?TYPE_PUBACK, 1)
     end;
-handle_in(Conn, ?TYPE_PUBACK, #{<<"code">> := _Code}) ->
+handle_in(_Conn, ?TYPE_PUBACK, #{<<"code">> := _Code}) ->
     ok;
 handle_in(Conn, ?TYPE_SUBSCRIBE, #{<<"qos">> := Qos, <<"topic">> := Topic}) ->
     case ?subscribe(#{conn => Conn, topic => Topic, qos => Qos}) of
@@ -226,33 +252,41 @@ handle_out(Conn, ?TYPE_DISCONNECT) ->
 %%--------------------------------------------------------------------
 %% Frame
 
+wrap(Bin) ->
+    <<Bin/binary, "##">>.
+
 frame_connect(ClientInfo, Password) ->
-    jsx:encode(#{type => ?TYPE_CONNECT,
-                 clientinfo => ClientInfo,
-                 password => Password}).
+    wrap(jsx:encode(
+           #{type => ?TYPE_CONNECT,
+             clientinfo => ClientInfo,
+             password => Password}
+          )).
+
 frame_connack(Code) ->
-    jsx:encode(#{type => ?TYPE_CONNACK, code => Code}).
+    wrap(jsx:encode(#{type => ?TYPE_CONNACK, code => Code})).
 
 frame_publish(Topic, Qos, Payload) ->
-    jsx:encode(#{type => ?TYPE_PUBLISH,
-                       topic => Topic,
-                       qos => Qos,
-                       payload => Payload}).
+    wrap(jsx:encode(
+           #{type => ?TYPE_PUBLISH,
+             topic => Topic,
+             qos => Qos,
+             payload => Payload}
+          )).
 
 frame_puback(Code) ->
-    jsx:encode(#{type => ?TYPE_PUBACK, code => Code}).
+    wrap(jsx:encode(#{type => ?TYPE_PUBACK, code => Code})).
 
 frame_subscribe(Topic, Qos) ->
-    jsx:encode(#{type => ?TYPE_SUBSCRIBE, topic => Topic, qos => Qos}).
+    wrap(jsx:encode(#{type => ?TYPE_SUBSCRIBE, topic => Topic, qos => Qos})).
 
 frame_suback(Code) ->
-    jsx:encode(#{type => ?TYPE_SUBACK, code => Code}).
+    wrap(jsx:encode(#{type => ?TYPE_SUBACK, code => Code})).
 
 frame_unsubscribe(Topic) ->
-    jsx:encode(#{type => ?TYPE_UNSUBSCRIBE, topic => Topic}).
+    wrap(jsx:encode(#{type => ?TYPE_UNSUBSCRIBE, topic => Topic})).
 
 frame_unsuback(Code) ->
-    jsx:encode(#{type => ?TYPE_UNSUBACK, code => Code}).
+    wrap(jsx:encode(#{type => ?TYPE_UNSUBACK, code => Code})).
 
 frame_disconnect() ->
-    jsx:encode(#{type => ?TYPE_DISCONNECT}).
+    wrap(jsx:encode(#{type => ?TYPE_DISCONNECT})).

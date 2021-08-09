@@ -110,6 +110,7 @@
                , owner
                , pending_calls = []
                , keepalive_timer
+               , recvbuf = <<>>
                }).
 
 %%--------------------------------------------------------------------
@@ -308,7 +309,7 @@ handle_event({call, From}, stop, _StateName, St) ->
 
 handle_event(info, {tcp, _Sock, Data}, _StateName, St) ->
     ?LOG(debug, "RECV Data: ~p", [Data], St),
-    process_incoming(Data, [], run_sock(St));
+    process_incoming(Data, run_sock(St));
 
 handle_event(info, {tcp_error, _Sock, Reason}, _StateName, St) ->
     ?LOG(error, "The connection error occured tcp_error, reason:~p",
@@ -400,19 +401,25 @@ send(Data, St = #state{sock = Sock}) ->
 %% Incoming
 %%--------------------------------------------------------------------
 
-process_incoming(<<>>, Packets, St) ->
-    {keep_state, St, next_events(Packets)};
-
-process_incoming(Bytes, Packets, St) ->
-
-    try jsx:decode(Bytes, [return_maps]) of
-        Packet ->
-            {keep_state, St, next_events([Packet|Packets])}
+process_incoming(Bytes, St = #state{recvbuf = Remain}) ->
+    {NRemain, RawPackets} = parse_all_bytes(<<Remain/binary, Bytes/binary>>),
+    try
+        Packets = [jsx:decode(RawPacket, [return_maps])
+                   || RawPacket <- RawPackets],
+        {keep_state, St#state{recvbuf = NRemain}, next_events(Packets)}
     catch
         error:Error -> {stop, Error}
     end.
 
--compile({inline, [next_events/1]}).
+parse_all_bytes(Bin) ->
+    parse_all_bytes(Bin, <<>>, []).
+parse_all_bytes(<<"##", Remain/binary>>, Buf, Acc) ->
+    parse_all_bytes(Remain, <<>>, [Buf|Acc]);
+parse_all_bytes(<<B, Remain/binary>>, Buf, Acc) ->
+    parse_all_bytes(Remain, <<Buf/binary, B>>, Acc);
+parse_all_bytes(<<>>, Buf, Acc) ->
+    {Buf, Acc}.
+
 next_events([]) -> [];
 next_events([Packet]) ->
     {next_event, cast, Packet};
@@ -432,34 +439,41 @@ merge_opts(Defaults, Options) ->
 %% Frames
 %%--------------------------------------------------------------------
 
+wrap(Bin) ->
+    <<Bin/binary, "##">>.
+
 frame_connect(ClientInfo, Password) ->
-    jsx:encode(#{type => ?TYPE_CONNECT,
-                 clientinfo => ClientInfo,
-                 password => Password}).
+    wrap(jsx:encode(
+           #{type => ?TYPE_CONNECT,
+             clientinfo => ClientInfo,
+             password => Password}
+          )).
+
 %frame_connack(Code) ->
 %    jsx:encode(#{type => ?TYPE_CONNACK, code => Code}).
 
 frame_publish(Topic, Qos, Payload) ->
-    jsx:encode(#{type => ?TYPE_PUBLISH,
-                 topic => Topic,
-                 qos => Qos,
-                 payload => Payload}
-              ).
+    wrap(jsx:encode(
+           #{type => ?TYPE_PUBLISH,
+             topic => Topic,
+             qos => Qos,
+             payload => Payload}
+          )).
 
 frame_puback(Code) ->
-    jsx:encode(#{type => ?TYPE_PUBACK, code => Code}).
+    wrap(jsx:encode(#{type => ?TYPE_PUBACK, code => Code})).
 
 frame_subscribe(Topic, Qos) ->
-    jsx:encode(#{type => ?TYPE_SUBSCRIBE, topic => Topic, qos => Qos}).
+    wrap(jsx:encode(#{type => ?TYPE_SUBSCRIBE, topic => Topic, qos => Qos})).
 
 %frame_suback(Code) ->
 %    jsx:encode(#{type => ?TYPE_SUBACK, code => Code}).
 
 frame_unsubscribe(Topic) ->
-    jsx:encode(#{type => ?TYPE_UNSUBSCRIBE, topic => Topic}).
+    wrap(jsx:encode(#{type => ?TYPE_UNSUBSCRIBE, topic => Topic})).
 
 %frame_unsuback(Code) ->
 %    jsx:encode(#{type => ?TYPE_UNSUBACK, code => Code}).
 
 frame_disconnect() ->
-    jsx:encode(#{type => ?TYPE_DISCONNECT}).
+    wrap(jsx:encode(#{type => ?TYPE_DISCONNECT})).
