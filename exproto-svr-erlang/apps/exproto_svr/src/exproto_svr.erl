@@ -73,10 +73,12 @@
             LoopRecv = fun _Lp(_St) ->
                 case grpc_stream:recv(_St) of
                     {more, _Reqs, _NSt} ->
-                        ?LOG("~p: ~p~n", [?FUNCTION_NAME, _Reqs]),
+                        ?LOG("~s ~p: ~p~n", [datetime(),
+                                             ?FUNCTION_NAME, _Reqs]),
                         Fun(_Reqs), _Lp(_NSt);
                     {eos, _Reqs, _NSt} ->
-                        ?LOG("~p: ~p~n", [?FUNCTION_NAME, _Reqs]),
+                        ?LOG("~s ~p: ~p~n", [datetime(),
+                                             ?FUNCTION_NAME, _Reqs]),
                         Fun(_Reqs), _NSt
                 end
             end,
@@ -84,6 +86,10 @@
             grpc_stream:reply(NStream, #{}),
             {ok, NStream}
         end).
+
+datetime() ->
+    {{Y,M,D}, {H,Mm,S}} = calendar:local_time(),
+    io_lib:format("~w-~w-~w ~w:~w:~w", [Y,M,D,H,Mm,S]).
 
 %%--------------------------------------------------------------------
 %% ConnectionHandler callbacks
@@ -104,6 +110,8 @@ on_socket_closed(Stream, _Md) ->
 on_received_bytes(Stream, _Md) ->
     ?loop_recv_and_reply_empty_success(Stream,
       fun(Reqs) ->
+        statistics(runtime),
+        statistics(wall_clock),
         lists:foreach(
           fun(#{conn := Conn, bytes := Bytes}) ->
             Remain = get_conn_recv_buffer(Conn),
@@ -113,11 +121,23 @@ on_received_bytes(Stream, _Md) ->
             lists:foreach(fun(RawPacket) ->
                 #{<<"type">> := Type} = Params
                                       = jsx:decode(RawPacket, [return_maps]),
-
                 _ = handle_in(Conn, Type, Params)
             end, RawPackets)
-          end, Reqs)
+          end, Reqs),
+          {_, Time1} = statistics(runtime),
+          {_, Time2} = statistics(wall_clock),
+          io:format("~w -- CPU time: ~s, Procs time: ~s\n",
+                    [length(Reqs), format_ts(Time1), format_ts(Time2)]),
+          ok
       end).
+
+format_ts(Ms) ->
+    case Ms > 1000 of
+        true ->
+            lists:flatten(io_lib:format("~.2fs", [Ms/1000]));
+        _ ->
+            lists:flatten(io_lib:format("~wms", [Ms]))
+    end.
 
 get_conn_recv_buffer(Conn) ->
     case get({Conn, recvbuf}) of
