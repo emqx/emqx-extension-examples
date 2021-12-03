@@ -23,9 +23,16 @@ start(_StartType, _StartArgs) ->
                     'emqx.exproto.v1.ConnectionHandler' => exproto_svr
                  }
                 },
-    Options = [],
-    {ok, _} = grpc:start_server(exproto_svr, 9001, Services, Options),
-    io:format("Start service exproto_svr on 9001 successfully!~n", []),
+    Options1 = [],
+    Options2 = [{ssl_options,
+                 [ {verify, verify_peer}
+                 , {fail_if_no_peer_cert, false}]
+                 ++ ssl_opts()
+                }],
+    {ok, _} = grpc:start_server(exproto_svr_http,  9001, Services, Options1),
+    {ok, _} = grpc:start_server(exproto_svr_https, 9002, Services, Options2),
+    io:format("Start exproto_svr http server on  9001 successfully!~n", []),
+    io:format("Start exproto_svr https server on 9002 successfully!~n", []),
 
     %% grpc client
     Addr = env(server_addr, ?DEFAULT_SERVER_ADDR),
@@ -37,7 +44,8 @@ start(_StartType, _StartArgs) ->
     start_supervisor().
 
 stop(_State) ->
-    grpc:stop_server(exproto_svr),
+    grpc:stop_server(exproto_svr_http),
+    grpc:stop_server(exproto_svr_https),
     ok.
 
 stats() ->
@@ -59,3 +67,9 @@ env(Key, Def) ->
         {ok, Val} -> Val;
         undefined -> Def
     end.
+
+ssl_opts() ->
+    [ {cacertfile, env(cacertfile, "certs/cacert.pem")}
+    , {certfile, env(certfile, "certs/cert.pem")}
+    , {keyfile, env(keyfile, "certs/key.pem")}
+    ].
