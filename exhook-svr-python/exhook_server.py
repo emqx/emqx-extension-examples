@@ -106,6 +106,16 @@ class HookProvider(exhook_pb2_grpc.HookProviderServicer):
         reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", message=nmsg)
         return reply
 
+    ## case2: stop publish the 't/d' messages
+    #def OnMessagePublish(self, request, context):
+    #    nmsg = request.message
+    #    if nmsg.topic == 't/d':
+    #        nmsg.payload = b""
+    #        nmsg.headers['allow_publish'] = b"false"
+    #
+    #    reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", message=nmsg)
+    #    return reply
+
     def OnMessageDelivered(self, request, context):
         return exhook_pb2.EmptySuccess()
 

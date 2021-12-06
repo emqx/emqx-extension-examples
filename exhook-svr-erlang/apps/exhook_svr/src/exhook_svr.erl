@@ -192,6 +192,20 @@ on_message_publish(_Req = #{message := Msg}, Md) ->
     NMsg = Msg#{payload => <<"hardcode payload by exhook-svr-erlang :)">>},
     {ok, #{type => 'STOP_AND_RETURN', value => {message, NMsg}}, Md}.
 
+%% Case2: stop publish the 't/d' messages
+%on_message_publish(_Req = #{message := Msg}, Md) ->
+%    ets:update_counter(exhook_stats, ?FUNCTION_NAME, {2, 1}, {?FUNCTION_NAME, 0}),
+%    NMsg =
+%        case maps:get(topic, Msg) of
+%            <<"t/d">> ->
+%                NHeader = maps:put(<<"allow_publish">>, <<"false">>,
+%                                   maps:get(headers, Msg, #{})),
+%                maps:put(payload, <<"">>, maps:put(headers, NHeader, Msg));
+%            _ ->
+%                Msg
+%        end,
+%    {ok, #{type => 'STOP_AND_RETURN', value => {message, NMsg}}, Md}.
+
 -spec on_message_delivered(emqx_exhook_pb:message_delivered_request(), grpc:metadata())
     -> {ok, emqx_exhook_pb:empty_success(), grpc:metadata()}
      | {error, grpc_cowboy_h:error_response()}.
