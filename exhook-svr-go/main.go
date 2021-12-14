@@ -87,7 +87,7 @@ func (s *server) OnClientCheckAcl(ctx context.Context, in *pb.ClientCheckAclRequ
 	reply := &pb.ValuedResponse{}
 	reply.Type = pb.ValuedResponse_STOP_AND_RETURN
 	reply.Value = &pb.ValuedResponse_BoolResult{BoolResult: true}
-	return &pb.ValuedResponse{}, nil
+	return reply, nil
 }
 
 func (s *server) OnClientSubscribe(ctx context.Context, in *pb.ClientSubscribeRequest) (*pb.EmptySuccess, error) {
@@ -142,6 +142,19 @@ func (s *server) OnMessagePublish(ctx context.Context, in *pb.MessagePublishRequ
 	reply.Value = &pb.ValuedResponse_Message{Message: in.Message}
 	return reply, nil
 }
+
+//case2: stop publish the `t/d` messages
+//func (s *server) OnMessagePublish(ctx context.Context, in *pb.MessagePublishRequest) (*pb.ValuedResponse, error) {
+//	cnter.Count(1)
+//    if in.Message.Topic == "t/d" {
+//        in.Message.Headers["allow_publish"] = "false"
+//        in.Message.Payload = []byte("")
+//    }
+//	reply := &pb.ValuedResponse{}
+//	reply.Type = pb.ValuedResponse_STOP_AND_RETURN
+//	reply.Value = &pb.ValuedResponse_Message{Message: in.Message}
+//	return reply, nil
+//}
 
 func (s *server) OnMessageDelivered(ctx context.Context, in *pb.MessageDeliveredRequest) (*pb.EmptySuccess, error) {
 	cnter.Count(1)
