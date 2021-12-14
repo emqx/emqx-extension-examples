@@ -272,6 +272,30 @@ public class ExServer {
             responseObserver.onCompleted();
         }
 
+// case2: stop publish the 't/d' messages
+//        @Override
+//        public void onMessagePublish(MessagePublishRequest request, StreamObserver<ValuedResponse> responseObserver) {
+//            DEBUG("onMessagePublish", request);
+//
+//            Message nmsg = request.getMessage();
+//            if ("t/d".equals(nmsg.getTopic())) {
+//                ByteString bstr = ByteString.copyFromUtf8("");
+//                nmsg = Message.newBuilder()
+//                              .setId     (request.getMessage().getId())
+//                              .setNode   (request.getMessage().getNode())
+//                              .setFrom   (request.getMessage().getFrom())
+//                              .setTopic  (request.getMessage().getTopic())
+//                              .setPayload(bstr)
+//                              .putHeaders("allow_publish", "false").build();
+//            }
+//
+//            ValuedResponse reply = ValuedResponse.newBuilder()
+//                                                 .setType(ValuedResponse.ResponsedType.STOP_AND_RETURN)
+//                                                 .setMessage(nmsg).build();
+//            responseObserver.onNext(reply);
+//            responseObserver.onCompleted();
+//        }
+
         @Override
         public void onMessageDelivered(MessageDeliveredRequest request, StreamObserver<EmptySuccess> responseObserver) {
             DEBUG("onMessageDelivered", request);
