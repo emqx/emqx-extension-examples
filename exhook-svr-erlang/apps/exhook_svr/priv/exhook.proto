@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Copyright (c) 2020-2021 EMQ Technologies Co., Ltd. All Rights Reserved.
+// Copyright (c) 2020-2022 EMQ Technologies Co., Ltd. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ service HookProvider {
 
   rpc OnClientAuthenticate(ClientAuthenticateRequest) returns (ValuedResponse) {};
 
-  rpc OnClientCheckAcl(ClientCheckAclRequest) returns (ValuedResponse) {};
+  rpc OnClientAuthorize(ClientAuthorizeRequest) returns (ValuedResponse) {};
 
   rpc OnClientSubscribe(ClientSubscribeRequest) returns (EmptySuccess) {};
 
@@ -56,7 +56,7 @@ service HookProvider {
 
   rpc OnSessionDiscarded(SessionDiscardedRequest) returns (EmptySuccess) {};
 
-  rpc OnSessionTakeovered(SessionTakeoveredRequest) returns (EmptySuccess) {};
+  rpc OnSessionTakenover(SessionTakenoverRequest) returns (EmptySuccess) {};
 
   rpc OnSessionTerminated(SessionTerminatedRequest) returns (EmptySuccess) {};
 
@@ -123,18 +123,18 @@ message ClientAuthenticateRequest {
   bool result = 2;
 }
 
-message ClientCheckAclRequest {
+message ClientAuthorizeRequest {
 
   ClientInfo clientinfo = 1;
 
-  enum AclReqType {
+  enum AuthorizeReqType {
 
     PUBLISH = 0;
 
     SUBSCRIBE = 1;
   }
 
-  AclReqType type = 2;
+  AuthorizeReqType type = 2;
 
   string topic = 3;
 
@@ -190,7 +190,7 @@ message SessionDiscardedRequest {
   ClientInfo clientinfo = 1;
 }
 
-message SessionTakeoveredRequest {
+message SessionTakenoverRequest {
 
   ClientInfo clientinfo = 1;
 }
@@ -236,10 +236,10 @@ message EmptySuccess { }
 
 message ValuedResponse {
 
-  // The responsed value type
-  //  - contiune: Use the responsed value and execute the next hook
-  //  - ignore: Ignore the responsed value
-  //  - stop_and_return: Use the responsed value and stop the chain executing
+  // The responded value type
+  //  - contiune: Use the responded value and execute the next hook
+  //  - ignore: Ignore the responded value
+  //  - stop_and_return: Use the responded value and stop the chain executing
   enum ResponsedType {
 
     CONTINUE = 0;
@@ -253,7 +253,7 @@ message ValuedResponse {
 
   oneof value {
 
-    // Boolean result, used on the 'client.authenticate', 'client.check_acl' hooks
+    // Boolean result, used on the 'client.authenticate', 'client.authorize' hooks
     bool bool_result = 3;
 
     // Message result, used on the 'message.*' hooks
@@ -267,7 +267,7 @@ message BrokerInfo {
 
   string sysdescr = 2;
 
-  string uptime = 3;
+  int64 uptime = 3;
 
   string datetime = 4;
 }
@@ -279,12 +279,12 @@ message HookSpec {
   // Available value:
   //   "client.connect",      "client.connack"
   //   "client.connected",    "client.disconnected"
-  //   "client.authenticate", "client.check_acl"
+  //   "client.authenticate", "client.authorize"
   //   "client.subscribe",    "client.unsubscribe"
   //
   //   "session.created",      "session.subscribed"
   //   "session.unsubscribed", "session.resumed"
-  //   "session.discarded",    "session.takeovered"
+  //   "session.discarded",    "session.takenover"
   //   "session.terminated"
   //
   //   "message.publish", "message.delivered"

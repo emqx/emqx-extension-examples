@@ -26,7 +26,7 @@
         , on_client_connected/2
         , on_client_disconnected/2
         , on_client_authenticate/2
-        , on_client_check_acl/2
+        , on_client_authorize/2
         , on_client_subscribe/2
         , on_client_unsubscribe/2
         , on_session_created/2
@@ -34,7 +34,7 @@
         , on_session_unsubscribed/2
         , on_session_resumed/2
         , on_session_discarded/2
-        , on_session_takeovered/2
+        , on_session_takenover/2
         , on_session_terminated/2
         , on_message_publish/2
         , on_message_delivered/2
@@ -57,7 +57,7 @@ on_provider_loaded(_Req, Md) ->
                      #{name => <<"client.connected">>},
                      #{name => <<"client.disconnected">>},
                      #{name => <<"client.authenticate">>},
-                     #{name => <<"client.check_acl">>},
+                     #{name => <<"client.authorize">>},
                      #{name => <<"client.subscribe">>},
                      #{name => <<"client.unsubscribe">>},
                      #{name => <<"session.created">>},
@@ -65,7 +65,7 @@ on_provider_loaded(_Req, Md) ->
                      #{name => <<"session.unsubscribed">>},
                      #{name => <<"session.resumed">>},
                      #{name => <<"session.discarded">>},
-                     #{name => <<"session.takeovered">>},
+                     #{name => <<"session.takenover">>},
                      #{name => <<"session.terminated">>},
                      #{name => <<"message.publish">>},
                      #{name => <<"message.delivered">>},
@@ -114,10 +114,10 @@ on_client_authenticate(_Req, Md) ->
     ets:update_counter(exhook_stats, ?FUNCTION_NAME, {2, 1}, {?FUNCTION_NAME, 0}),
     {ok, #{type => 'STOP_AND_RETURN', value => {bool_result, true}}, Md}.
 
--spec on_client_check_acl(emqx_exhook_pb:client_check_acl_request(), grpc:metadata())
+-spec on_client_authorize(emqx_exhook_pb:client_authorize_request(), grpc:metadata())
     -> {ok, emqx_exhook_pb:valued_response(), grpc:metadata()}
      | {error, grpc_cowboy_h:error_response()}.
-on_client_check_acl(_Req, Md) ->
+on_client_authorize(_Req, Md) ->
     ets:update_counter(exhook_stats, ?FUNCTION_NAME, {2, 1}, {?FUNCTION_NAME, 0}),
     {ok, #{type => 'STOP_AND_RETURN', value => {bool_result, true}}, Md}.
 
@@ -170,10 +170,10 @@ on_session_discarded(_Req, Md) ->
     ets:update_counter(exhook_stats, ?FUNCTION_NAME, {2, 1}, {?FUNCTION_NAME, 0}),
     {ok, #{}, Md}.
 
--spec on_session_takeovered(emqx_exhook_pb:session_takeovered_request(), grpc:metadata())
+-spec on_session_takenover(emqx_exhook_pb:session_takenover_request(), grpc:metadata())
     -> {ok, emqx_exhook_pb:empty_success(), grpc:metadata()}
      | {error, grpc_cowboy_h:error_response()}.
-on_session_takeovered(_Req, Md) ->
+on_session_takenover(_Req, Md) ->
     ets:update_counter(exhook_stats, ?FUNCTION_NAME, {2, 1}, {?FUNCTION_NAME, 0}),
     {ok, #{}, Md}.
 
