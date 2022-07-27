@@ -31,6 +31,8 @@
           "server hostname or IP address"},
          {port, $p, "port", {integer, 7993},
           "server port number"},
+         {transport, $T, "transport", {string, "tcp"},
+          "transport type, enum with tcp, udp"},
          {count, $c, "count", {integer, 200},
           "max count of clients"},
          {startnumber, $n, "startnumber", {integer, 0}, "start number"},
@@ -67,6 +69,8 @@
           "server hostname or IP address"},
          {port, $p, "port", {integer, 7993},
           "server port number"},
+         {transport, $T, "transport", {string, "tcp"},
+          "transport type, enum with tcp, udp"},
          {count, $c, "count", {integer, 200},
           "max count of clients"},
          {startnumber, $n, "startnumber", {integer, 0}, "start number"},
@@ -97,6 +101,8 @@
           "server hostname or IP address"},
          {port, $p, "port", {integer, 7993},
           "server port number"},
+         {transport, $T, "transport", {string, "tcp"},
+          "transport type, enum with tcp, udp"},
          {count, $c, "count", {integer, 200},
           "max count of clients"},
          {startnumber, $n, "startnumber", {integer, 0}, "start number"},
@@ -361,6 +367,8 @@ client_opts([{host, Host}|Opts], Acc) ->
     client_opts(Opts, [{host, Host}|Acc]);
 client_opts([{port, Port}|Opts], Acc) ->
     client_opts(Opts, [{port, Port}|Acc]);
+client_opts([{transport, Transport}|Opts], Acc) ->
+    client_opts(Opts, [{transport, list_to_atom(Transport)}|Acc]);
 client_opts([{username, Username}|Opts], Acc) ->
     client_opts(Opts, [{username, list_to_binary(Username)}|Acc]);
 client_opts([{password, Password}|Opts], Acc) ->

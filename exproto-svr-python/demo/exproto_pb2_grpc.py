@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from demo import exproto_pb2 as exproto__pb2
+import exproto_pb2 as exproto__pb2
 
 
 class ConnectionAdapterStub(object):

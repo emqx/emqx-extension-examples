@@ -85,13 +85,17 @@
 -define(DEFAULT_TCP_OPTIONS, [binary, {packet, raw}, {active, false},
                               {nodelay, true}]).
 
+-define(DEFAULT_UDP_OPTIONS, [binary, {active, false}]).
+
 -type(qos() :: 0 | 1 | 2).
 
 -type(host() :: inet:ip_address() | inet:hostname()).
 
 -type option() :: {host, host()}
                 | {port, inet:port_number()}
+                | {transport, tcp | udp}
                 | {tcp_opts, [gen_tcp:option()]}
+                | {udp_opts, [gen_udp:option()]}
                 | {clientid, iodata()}
                 | {username, iodata()}
                 | {password, iodata()}
@@ -101,7 +105,9 @@
 
 -record(state, { host = "localhost"
                , port = 7993
+               , transport = tcp
                , tcp_opts = []
+               , udp_opts = []
                , clientid
                , username
                , password
@@ -186,8 +192,14 @@ do_init([{host, Host}|Opts], St) ->
     do_init(Opts, St#state{host = Host});
 do_init([{port, Port}|Opts], St) ->
     do_init(Opts, St#state{port = Port});
+do_init([{transport, Transport}|Opts], St)
+  when Transport == tcp;
+       Transport == udp ->
+    do_init(Opts, St#state{transport = Transport});
 do_init([{tcp_opts, TcpOpts}|Opts], St) ->
     do_init(Opts, St#state{tcp_opts = TcpOpts});
+do_init([{udp_opts, UdpOpts}|Opts], St) ->
+    do_init(Opts, St#state{udp_opts = UdpOpts});
 do_init([{clientid, ClientId}|Opts], St) ->
     do_init(Opts, St#state{clientid = ClientId});
 do_init([{username, Username}|Opts], St) ->
@@ -199,15 +211,21 @@ do_init([{keepalive, Keepalive}|Opts], St) ->
 do_init([_|Opts], St) ->
     do_init(Opts, St).
 
+open(tcp, Host, Port, TcpOpts, _UdpOpts, Timeout) ->
+    gen_tcp:connect(Host, Port, merge_opts(?DEFAULT_TCP_OPTIONS, TcpOpts), Timeout);
+open(udp, _Host, _Port, _TcpOpts, UdpOpts, _) ->
+    gen_udp:open(0, merge_opts(?DEFAULT_UDP_OPTIONS, UdpOpts)).
+
 initialized({call, From}, connect, St = #state{
+                                           transport = Transport,
                                            host = Host,
                                            port = Port,
-                                           tcp_opts = TcpOpts0,
+                                           tcp_opts = TcpOpts,
+                                           udp_opts = UdpOpts,
                                            clientid = ClientId,
                                            username = Username,
                                            password = Password}) ->
-    TcpOpts = merge_opts(TcpOpts0, ?DEFAULT_TCP_OPTIONS),
-    case gen_tcp:connect(Host, Port, TcpOpts, 5000) of
+    case open(Transport, Host, Port, TcpOpts, UdpOpts, 5000) of
         {ok, Sock} ->
             ClientInfo = #{clientid => ClientId,
                            username => Username
@@ -285,6 +303,9 @@ connected({call, From}, disconnect, St) ->
     NSt = send(Data, St),
     {stop_and_reply, normal, [{reply, From, ok}], NSt};
 
+connected(cast, #{<<"type">> := ?TYPE_DISCONNECT}, St) ->
+    {stop, normal, St};
+
 connected(cast, #{<<"type">> := ?TYPE_PUBACK, <<"code">> := Code}, St) ->
     handle_ack(publish, Code, St);
 
@@ -308,6 +329,10 @@ handle_event({call, From}, stop, _StateName, St) ->
     {stop_and_reply, normal, St, [{reply, From, ok}]};
 
 handle_event(info, {tcp, _Sock, Data}, _StateName, St) ->
+    ?LOG(debug, "RECV Data: ~p", [Data], St),
+    process_incoming(Data, run_sock(St));
+
+handle_event(info, {udp, _Sock, _Host, _Port, Data}, _StateName, St) ->
     ?LOG(debug, "RECV Data: ~p", [Data], St),
     process_incoming(Data, run_sock(St));
 
@@ -393,8 +418,11 @@ ensure_keepalive_timer(St) ->
     %% Nothing to do
     St.
 
-send(Data, St = #state{sock = Sock}) ->
+send(Data, St = #state{transport = tcp, sock = Sock}) ->
     ok = gen_tcp:send(Sock, Data),
+    St;
+send(Data, St = #state{transport = udp, host = Host, port = Port, sock = Sock}) ->
+    ok = gen_udp:send(Sock, Host, Port, Data),
     St.
 
 %%--------------------------------------------------------------------
