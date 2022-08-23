@@ -18,7 +18,7 @@ start(_StartType, _StartArgs) ->
     %% grpc server
     Services = #{protos => [emqx_exhook_pb],
                  services => #{
-                    'emqx.exhook.v1.HookProvider' => exhook_svr
+                    'emqx.exhook.v2.HookProvider' => exhook_svr
                  }
                 },
     Options = [],
