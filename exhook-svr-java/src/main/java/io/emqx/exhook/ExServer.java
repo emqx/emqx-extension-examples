@@ -72,7 +72,7 @@ public class ExServer {
 
     /**
      * Main launches the server from the command line.
-     */
+    */
     public static void main(String[] args) throws IOException, InterruptedException {
         final ExServer server = new ExServer();
         server.start();
@@ -94,7 +94,7 @@ public class ExServer {
                     HookSpec.newBuilder().setName("client.connected").build(),
                     HookSpec.newBuilder().setName("client.disconnected").build(),
                     HookSpec.newBuilder().setName("client.authenticate").build(),
-                    HookSpec.newBuilder().setName("client.check_acl").build(),
+                    HookSpec.newBuilder().setName("client.authorize").build(),
                     HookSpec.newBuilder().setName("client.subscribe").build(),
                     HookSpec.newBuilder().setName("client.unsubscribe").build(),
 
@@ -103,7 +103,7 @@ public class ExServer {
                     HookSpec.newBuilder().setName("session.unsubscribed").build(),
                     HookSpec.newBuilder().setName("session.resumed").build(),
                     HookSpec.newBuilder().setName("session.discarded").build(),
-                    HookSpec.newBuilder().setName("session.takeovered").build(),
+                    HookSpec.newBuilder().setName("session.takenover").build(),
                     HookSpec.newBuilder().setName("session.terminated").build(),
 
                     HookSpec.newBuilder().setName("message.publish").build(),
