@@ -7,14 +7,25 @@ We are pleased to welcome contributions of examples for other  programming langu
 
 **emqx-exhook**
 
+For 5.0:
+
+| Language | Source                                                       |
+| -------- | ------------------------------------------------------------ |
+| Erlang   | [exhook-svr-erlang](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v5.0/exhook-svr-erlang) |
+| Golang   | [exhook-svr-go](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v5.0/exhook-svr-go) |
+| Java     | [exhook-svr-java](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v5.0/exhook-svr-java) |
+| Python   | [exhook-svr-python](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v5.0/exhook-svr-python) |
+
+
 For 4.4:
 
 | Language | Source                                                       |
 | -------- | ------------------------------------------------------------ |
-| Erlang   | [exhook-svr-erlang](https://github.com/emqx/emqx-extension-examples/tree/master/exhook-svr-erlang) |
-| Golang   | [exhook-svr-go](https://github.com/emqx/emqx-extension-examples/tree/master/exhook-svr-go) |
-| Java     | [exhook-svr-java](https://github.com/emqx/emqx-extension-examples/tree/master/exhook-svr-java) |
-| Python   | [exhook-svr-python](https://github.com/emqx/emqx-extension-examples/tree/master/exhook-svr-python) |
+| Erlang   | [exhook-svr-erlang](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v44/exhook-svr-erlang) |
+| Golang   | [exhook-svr-go](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v44/exhook-svr-go) |
+| Java     | [exhook-svr-java](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v44/exhook-svr-java) |
+| Python   | [exhook-svr-python](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v44/exhook-svr-python) |
+
 
 For 4.3:
 
