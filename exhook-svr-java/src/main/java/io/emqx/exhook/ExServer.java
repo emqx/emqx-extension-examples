@@ -168,8 +168,8 @@ public class ExServer {
         }
 
         @Override
-        public void onClientCheckAcl(ClientCheckAclRequest request, StreamObserver<ValuedResponse> responseObserver) {
-            DEBUG("onClientCheckAcl", request);
+        public void onClientAuthorize(ClientAuthorizeRequest request, StreamObserver<ValuedResponse> responseObserver) {
+            DEBUG("onClientAuthorize", request);
             ValuedResponse reply = ValuedResponse.newBuilder()
                                                  .setBoolResult(true)
                                                  .setType(ValuedResponse.ResponsedType.STOP_AND_RETURN)
@@ -236,8 +236,8 @@ public class ExServer {
         }
 
         @Override
-        public void onSessionTakeovered(SessionTakeoveredRequest request, StreamObserver<EmptySuccess> responseObserver) {
-            DEBUG("onSessionTakeovered", request);
+        public void onSessionTakenover(SessionTakenoverRequest request, StreamObserver<EmptySuccess> responseObserver) {
+            DEBUG("onSessionTakenover", request);
             EmptySuccess reply = EmptySuccess.newBuilder().build();
             responseObserver.onNext(reply);
             responseObserver.onCompleted();
