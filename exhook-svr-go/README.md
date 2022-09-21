@@ -12,8 +12,8 @@ This is a demo server written in java for exhook
     - Install the protocol compiler plugins for Go using the following commands:
     ```
     export GO111MODULE=on  # Enable module mode
-    go get google.golang.org/protobuf/cmd/protoc-gen-go \
-           google.golang.org/grpc/cmd/protoc-gen-go-grpc
+    go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
     ```
 
     - Update your PATH so that the protoc compiler can find the plugins:

@@ -31,7 +31,7 @@ func (s *server) OnProviderLoaded(ctx context.Context, in *pb.ProviderLoadedRequ
 		&pb.HookSpec{Name: "client.connected"},
 		&pb.HookSpec{Name: "client.disconnected"},
 		&pb.HookSpec{Name: "client.authenticate"},
-		&pb.HookSpec{Name: "client.check_acl"},
+		&pb.HookSpec{Name: "client.authorize"},
 		&pb.HookSpec{Name: "client.subscribe"},
 		&pb.HookSpec{Name: "client.unsubscribe"},
 		&pb.HookSpec{Name: "session.created"},
@@ -39,7 +39,7 @@ func (s *server) OnProviderLoaded(ctx context.Context, in *pb.ProviderLoadedRequ
 		&pb.HookSpec{Name: "session.unsubscribed"},
 		&pb.HookSpec{Name: "session.resumed"},
 		&pb.HookSpec{Name: "session.discarded"},
-		&pb.HookSpec{Name: "session.takeovered"},
+		&pb.HookSpec{Name: "session.takenover"},
 		&pb.HookSpec{Name: "session.terminated"},
 		&pb.HookSpec{Name: "message.publish"},
 		&pb.HookSpec{Name: "message.delivered"},
@@ -82,7 +82,7 @@ func (s *server) OnClientAuthenticate(ctx context.Context, in *pb.ClientAuthenti
 	return reply, nil
 }
 
-func (s *server) OnClientCheckAcl(ctx context.Context, in *pb.ClientCheckAclRequest) (*pb.ValuedResponse, error) {
+func (s *server) OnClientAuthorize(ctx context.Context, in *pb.ClientAuthorizeRequest) (*pb.ValuedResponse, error) {
 	cnter.Count(1)
 	reply := &pb.ValuedResponse{}
 	reply.Type = pb.ValuedResponse_STOP_AND_RETURN
@@ -124,7 +124,7 @@ func (s *server) OnSessionDiscarded(ctx context.Context, in *pb.SessionDiscarded
 	return &pb.EmptySuccess{}, nil
 }
 
-func (s *server) OnSessionTakeovered(ctx context.Context, in *pb.SessionTakeoveredRequest) (*pb.EmptySuccess, error) {
+func (s *server) OnSessionTakenover(ctx context.Context, in *pb.SessionTakenoverRequest) (*pb.EmptySuccess, error) {
 	cnter.Count(1)
 	return &pb.EmptySuccess{}, nil
 }
