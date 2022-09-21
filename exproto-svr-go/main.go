@@ -25,8 +25,8 @@ func (s *server) OnSocketCreated(in pb.ConnectionHandler_OnSocketCreatedServer) 
 		log.Println("recv error:", err)
 		return err
 	}
-	log.Println("[LOG] 客户端 SOCKET 连接")
-	// EMQX 认证
+	log.Println("[LOG] client connected")
+	// EMQX Auth
 	clientInfo := pb.ClientInfo{
 		Clientid: "client_test",
 		Username: "username",
@@ -38,11 +38,11 @@ func (s *server) OnSocketCreated(in pb.ConnectionHandler_OnSocketCreatedServer) 
 	}
 	response, err := client.Authenticate(in.Context(), &auth)
 	if err != nil {
-		log.Println("[LOG] EMQX 认证失败: ", err)
+		log.Println("[LOG] client auth failed: ", err)
 		return err
 	}
-	log.Println("[LOG] EMQX 认证成功: ", response)
-	// 订阅主题
+	log.Println("[LOG] client auth success: ", response)
+	// EMQX Subscribe Topic
 	subscribe := pb.SubscribeRequest{
 		Topic: "test/1",
 		Qos:   1,
@@ -50,18 +50,18 @@ func (s *server) OnSocketCreated(in pb.ConnectionHandler_OnSocketCreatedServer) 
 	}
 	response, err = client.Subscribe(in.Context(), &subscribe)
 	if err != nil {
-		log.Println("[LOG] 订阅主题失败: ", err)
+		log.Println("[LOG] client subscribe failed: ", err)
 		return err
 	}
-	log.Println("[LOG] 订阅主题成功: ", response)
-	// 启动心跳检测
+	log.Println("[LOG] client subscribe success: ", response)
+	// Start Heartbeat
 	timer := pb.TimerRequest{Conn: recv.Conn, Interval: 20, Type: pb.TimerType_KEEPALIVE}
 	response, err = client.StartTimer(in.Context(), &timer)
 	if err != nil {
-		log.Println("[LOG] 启动心跳检测失败: ", err)
+		log.Println("[LOG] start heartbeat failed: ", err)
 		return err
 	}
-	log.Println("[LOG] 启动心跳检测成功: ", response)
+	log.Println("[LOG] start heartbeat success: ", response)
 	return nil
 }
 
@@ -79,10 +79,10 @@ func (s *server) OnReceivedBytes(in pb.ConnectionHandler_OnReceivedBytesServer) 
 	}
 	response, err := client.Publish(in.Context(), &publish)
 	if err != nil {
-		log.Println("[LOG] 发布消息失败: ", err)
+		log.Println("[LOG] publish message failed: ", err)
 		return err
 	}
-	log.Println("[LOG] 客户端发送数据成功:", response.Code)
+	log.Println("[LOG] publish message success: ", response.Code)
 	return nil
 }
 
@@ -97,10 +97,10 @@ func (s *server) OnSocketClosed(in pb.ConnectionHandler_OnSocketClosedServer) er
 	}
 	_, err = client.Close(in.Context(), &closeReq)
 	if err != nil {
-		log.Println("[LOG] 关闭连接失败: ", err)
+		log.Println("[LOG] close connection failed: ", err)
 		return err
 	}
-	log.Println("[LOG] 关闭连接成功")
+	log.Println("[LOG] close connection success")
 	return nil
 }
 
@@ -110,12 +110,12 @@ func (s *server) OnTimerTimeout(in pb.ConnectionHandler_OnTimerTimeoutServer) er
 		log.Println("recv error:", err)
 		return err
 	}
-	log.Println("[LOG] 客户端心跳超时")
+	log.Println("[LOG] client heartbeat timeout")
 	closeReq := pb.CloseSocketRequest{
 		Conn: recv.Conn,
 	}
 	_, err = client.Close(in.Context(), &closeReq)
-	log.Println("[LOG] 超时关闭连接")
+	log.Println("[LOG] close connection success")
 	return nil
 }
 
@@ -125,17 +125,17 @@ func (s *server) OnReceivedMessages(in pb.ConnectionHandler_OnReceivedMessagesSe
 		log.Println("recv error:", err)
 		return err
 	}
-	log.Println("[LOG] 客户端收到消息")
+	log.Println("[LOG] client received message")
 	sendReq := pb.SendBytesRequest{
 		Conn:  recv.Conn,
 		Bytes: recv.Messages[0].Payload,
 	}
 	response, err := client.Send(in.Context(), &sendReq)
 	if err != nil {
-		log.Println("[LOG] 发送消息失败: ", err)
+		log.Println("[LOG] send message failed: ", err)
 		return err
 	}
-	log.Println("[LOG] 发送消息成功:", response.Code)
+	log.Println("[LOG] send message success: ", response.Code)
 	return nil
 }
 
@@ -144,7 +144,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	// 这里替换成你的EMQX的IP地址
+	// Replace this with the IP address of your EMQX server
 	conn, err := grpc.Dial("127.0.0.1:9100", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)

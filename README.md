@@ -30,10 +30,10 @@ For 4.3:
 
 For 4.4:
 
-| Language | Source                                                       |
-| -------- | ------------------------------------------------------------ |
+| Language | Source                                                                                               |
+| -------- |------------------------------------------------------------------------------------------------------|
 | Erlang   | [exproto-svr-erlang](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-erlang) |
-| Golang   | -                                                            |
+| Golang   | [exproto-svr-go](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-go)         |
 | Java     | [exproto-svr-java](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-java)     |
 | Python   | [exproto-svr-python](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-python) |
 
