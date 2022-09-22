@@ -1,6 +1,6 @@
 # exhook-svr-go
 
-This is a demo server written in java for exhook
+This is a demo server written in go for exhook
 
 ## Prerequisites
 
