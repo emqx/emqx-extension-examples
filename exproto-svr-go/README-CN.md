@@ -2,10 +2,13 @@
 
 ## 前提
 
-1. 仅支持开源版 4.3+（本文档基于企业版 4.4.9）
+1. 仅支持 EMQX 4.3.0 及以上版本，包括开源版和企业版
 2. 本项目默认你的机器已经安装 [GOLANG](https://golang.org) 环境，如果没有安装，请参考 [GOLANG 官方文档](https://golang.org/doc/install)。
-3. 目前官方的 4.3.0-4.3.5 的版本尚存在 bug，需要补丁。以下是加入补丁之后的 Demo。
-4. 如果你使用的时候，官方还没有修复 bug，可将[补丁](patch/grpc_client.beam) 放到你 EMQX 的 `lib/grpc-0.6.2/ebin` 下。
+3. 目前 EMQX 4.3.0-4.3.5 的版本尚存在 bug，请升级到更新版本或使用补丁修复：可将[补丁文件](patch/grpc_client.beam) 放到你 EMQX 的 `lib/grpc-0.6.2/ebin` 下，执行 `emqx eval 'c:lm().'`。更详细的操作步骤参照 [在运行时安装 EMQX 补丁包](https://www.emqx.io/docs/zh/v4.3/advanced/patches.html)。
+
+其他文档：
+- 开源版 exproto 使用文档：[多语言扩展 - 协议接入](https://www.emqx.io/docs/zh/v4.3/advanced/lang-exproto.html)
+- 企业版 exproto 使用文档：[多语言扩展 - 协议接入]([https://www.emqx.io/docs/zh/v4.3/advanced/lang-exproto.html](https://docs.emqx.com/zh/enterprise/v4.3/modules/exproto.html))
 
 ## 安装 protoc buffer
 
