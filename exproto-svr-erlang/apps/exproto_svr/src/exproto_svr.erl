@@ -36,7 +36,8 @@
         , on_received_messages/2
         ]).
 
--define(LOG(Fmt, Args), io:format(standard_error, Fmt, Args)).
+%-define(LOG(Fmt, Args), io:format(standard_error, Fmt, Args)).
+-define(LOG(Fmt, Args), begin Fmt, Args, ok end).
 
 -define(CLIENT, emqx_exproto_v_1_connection_adapter_client).
 
