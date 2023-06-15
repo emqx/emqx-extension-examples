@@ -10,10 +10,15 @@
 
 Install gRPC and gRPC tools
 
-
 ```bash
 python -m pip install grpcio
 python -m pip install grpcio-tools
+```
+
+### Start your grpc server
+
+```
+python exproto_server.py
 ```
 
 ## Update to the latest exproto.proto
