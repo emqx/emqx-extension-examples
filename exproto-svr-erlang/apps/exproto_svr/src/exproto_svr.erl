@@ -37,7 +37,7 @@
         ]).
 
 %-define(LOG(Fmt, Args), io:format(standard_error, Fmt, Args)).
--define(LOG(Fmt, Args), begin Fmt, Args, ok end).
+-define(LOG(Fmt, Args), begin _ = Fmt, _ = Args, ok end).
 
 -define(CLIENT, emqx_exproto_v_1_connection_adapter_client).
 
@@ -205,7 +205,8 @@ handle_in(Conn, ?TYPE_CONNECT, #{<<"clientinfo">> := ClientInfo, <<"password">> 
     NClientInfo0 = maps:from_list([{binary_to_atom(K, utf8), V} || {K, V} <- maps:to_list(ClientInfo)]),
     NClientInfo = NClientInfo0#{
                     proto_name => <<"exproto-demo">>,
-                    proto_ver => <<"1.0">>
+                    proto_ver => <<"1.0">>,
+                    mountpoint => <<"exproto/">>
                    },
     case ?authenticate(#{conn => Conn, clientinfo => NClientInfo, password => Password}) of
         {ok, #{code := 'SUCCESS'}, _} ->
