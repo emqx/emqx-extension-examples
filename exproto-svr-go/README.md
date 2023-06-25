@@ -26,7 +26,7 @@
 2. Start the grpc server
 
 ```
-python exproto_server.py
+go run main.go
 ```
 
 3. Send message to ExProto tcp listener via `telnent`,
