@@ -45,7 +45,7 @@ class ExProtoConnectionUnaryHandler(exproto_pb2_grpc.ConnectionUnaryHandlerServi
         auth_response = self.stub.Authenticate(auth)
         print("[response] Authenticate response: %s" % str(auth_response.code))
 
-        # Subscribe to topic t/a for this connection
+        # Subscribe to topic test/echo for this connection
         print("[request ] Send SubscribeRequest to subscribe topic test/echo")
         subscribe = exproto_pb2.SubscribeRequest(conn=request.conn, topic="test/echo", qos=1)
         sub_response = self.stub.Subscribe(subscribe)
