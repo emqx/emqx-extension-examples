@@ -1,9 +1,8 @@
-# Exproto-svr-java快速指南
+# ExProto Java Server Example
 
 [English](README.md) | 简体中文
 
-该示例程序基于 EMQX v5.1 的 Exroto 网关。它实现了消息回声的功能，以展示所有函数是如何工作的。
-
+该示例程序基于 EMQX v5.1 的 ExProto 网关。它实现了消息回声的功能，以展示所有函数是如何工作的。
 
 ## 前提
 

@@ -1,5 +1,8 @@
 # ExProto Go Demo server
 
+This example is based on the ExProto Gateway of EMQX v5.1.
+It implements the function of message echo to demonstrate how all functions work.
+
 ## Prerequisites
 
 - Go, any one of the three latest major releases of Go.

@@ -1,8 +1,8 @@
-# Exproto Java Server
+# ExProto Java Server Example
 
 English | [简体中文](README-CN.md)
 
-This example is based on the Exroto Gateway of EMQX v5.1.
+This example is based on the ExProto Gateway of EMQX v5.1.
 It implements the function of message echo to demonstrate how all functions work.
 
 ## Prerequisites 
