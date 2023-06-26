@@ -19,33 +19,49 @@
   $ export PATH="$PATH:$(go env GOPATH)/bin"
   ```
 
-## Have a tests
+## Quick start
 
-1. Start the ExProto gateway in default configurations
+1. Make sure you are running EMQX v5.1.0 or above and start the ExProto Gateway with default
+   configuration through EMQX Dashboard.
 
-2. Start the grpc server
+2. Start the gRPC Server using the following command on the same machine as EMQX.
+   ```
+   go run main.go
+   ```
 
-```
-go run main.go
-```
+3. Use the "telnet" command to simulate a TCP client connecting to the ExProto Gateway's 7993
+   listener port. i.e:
 
-3. Send message to ExProto tcp listener via `telnent`,
-   and you will receive the echo messages automatically. i.e:
+   ```
+   telnet 127.0.0.1 7993
+   ```
 
-```
-$ telnet 127.0.0.1 7993
-Trying 127.0.0.1...
-Connected to 127.0.0.1.
-Escape character is '^]'.
-Hi, this is tcp client!
-Hi, this is tcp client!
-```
+4. When trying to type any character in the telnet command, we will find that the server outputs
+   it as is, indicating that the entire example has run successfully. For example:
+
+   ```
+   $ telnet 127.0.0.1 7993
+   Trying 127.0.0.1...
+   Connected to 127.0.0.1.
+   Escape character is '^]'.
+   Hi, this is tcp client!
+   Hi, this is tcp client!
+   ```
+
+Finally, you can compare the logs output by the gRPC program with the ExProto.java code
+and understand how it works.
+
 
 ## Update to the latest exproto.proto
 
-Due to the fact that the exproto.proto file used in this demo is not kept in sync with the emqx repository
-in real time.
-You need to manually update the `protos/exproto.proto` file and then use the following command to regenerate the code:
+Due to the inconsistency between the exproto.proto file used in this demo and the one included
+in your installed version of EMQX, you may need to ensure their consistency.
+
+For example, in EMQX v5.1.0, this file is located at
+https://github.com/emqx/emqx/blob/v5.1.0/apps/emqx_gateway_exproto/priv/protos/exproto.proto
+
+You need to manually update it to the `protos/exproto.proto` location and
+regenerate code via the following command:
 
 ```
 protoc --go_out=. --go_opt=paths=source_relative \
