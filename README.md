@@ -39,14 +39,22 @@ For 4.3:
 
 **emqx-exproto**
 
-For 4.4:
-
-| Language | Source                                                                                               |
+For 5.1
 | -------- |------------------------------------------------------------------------------------------------------|
 | Erlang   | [exproto-svr-erlang](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-erlang) |
 | Golang   | [exproto-svr-go](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-go)         |
 | Java     | [exproto-svr-java](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-java)     |
 | Python   | [exproto-svr-python](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-python) |
+
+
+For 4.4:
+
+| Language | Source                                                                                               |
+| -------- |------------------------------------------------------------------------------------------------------|
+| Erlang   | [exproto-svr-erlang](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v44/exproto-svr-erlang) |
+| Golang   | [exproto-svr-go](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v44/exproto-svr-go)         |
+| Java     | [exproto-svr-java](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v44/exproto-svr-java)     |
+| Python   | [exproto-svr-python](https://github.com/emqx/emqx-extension-examples/tree/for-emqx-v44/exproto-svr-python) |
 
 For 4.3:
 
