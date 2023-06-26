@@ -39,7 +39,8 @@ For 4.3:
 
 **emqx-exproto**
 
-For 5.1
+For 5.1:
+
 | -------- |------------------------------------------------------------------------------------------------------|
 | Erlang   | [exproto-svr-erlang](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-erlang) |
 | Golang   | [exproto-svr-go](https://github.com/emqx/emqx-extension-examples/tree/master/exproto-svr-go)         |
