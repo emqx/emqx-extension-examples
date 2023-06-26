@@ -2,12 +2,12 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from demo import exproto_pb2 as exproto__pb2
+import exproto_pb2 as exproto__pb2
 
 
 class ConnectionAdapterStub(object):
-    """The Broker side serivce. It provides a set of APIs to
-    handle a protcol access
+    """The Broker side service. It provides a set of APIs to
+    handle a protocol access
     """
 
     def __init__(self, channel):
@@ -51,11 +51,16 @@ class ConnectionAdapterStub(object):
                 request_serializer=exproto__pb2.UnsubscribeRequest.SerializeToString,
                 response_deserializer=exproto__pb2.CodeResponse.FromString,
                 )
+        self.RawPublish = channel.unary_unary(
+                '/emqx.exproto.v1.ConnectionAdapter/RawPublish',
+                request_serializer=exproto__pb2.RawPublishRequest.SerializeToString,
+                response_deserializer=exproto__pb2.CodeResponse.FromString,
+                )
 
 
 class ConnectionAdapterServicer(object):
-    """The Broker side serivce. It provides a set of APIs to
-    handle a protcol access
+    """The Broker side service. It provides a set of APIs to
+    handle a protocol access
     """
 
     def Send(self, request, context):
@@ -106,6 +111,12 @@ class ConnectionAdapterServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RawPublish(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ConnectionAdapterServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -144,6 +155,11 @@ def add_ConnectionAdapterServicer_to_server(servicer, server):
                     request_deserializer=exproto__pb2.UnsubscribeRequest.FromString,
                     response_serializer=exproto__pb2.CodeResponse.SerializeToString,
             ),
+            'RawPublish': grpc.unary_unary_rpc_method_handler(
+                    servicer.RawPublish,
+                    request_deserializer=exproto__pb2.RawPublishRequest.FromString,
+                    response_serializer=exproto__pb2.CodeResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'emqx.exproto.v1.ConnectionAdapter', rpc_method_handlers)
@@ -152,8 +168,8 @@ def add_ConnectionAdapterServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class ConnectionAdapter(object):
-    """The Broker side serivce. It provides a set of APIs to
-    handle a protcol access
+    """The Broker side service. It provides a set of APIs to
+    handle a protocol access
     """
 
     @staticmethod
@@ -275,9 +291,28 @@ class ConnectionAdapter(object):
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
+    @staticmethod
+    def RawPublish(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/emqx.exproto.v1.ConnectionAdapter/RawPublish',
+            exproto__pb2.RawPublishRequest.SerializeToString,
+            exproto__pb2.CodeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
 
 class ConnectionHandlerStub(object):
-    """Missing associated documentation comment in .proto file."""
+    """Deprecated service.
+    Please using `ConnectionUnaryHandler` to replace it
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -313,7 +348,9 @@ class ConnectionHandlerStub(object):
 
 
 class ConnectionHandlerServicer(object):
-    """Missing associated documentation comment in .proto file."""
+    """Deprecated service.
+    Please using `ConnectionUnaryHandler` to replace it
+    """
 
     def OnSocketCreated(self, request_iterator, context):
         """-- socket layer
@@ -385,7 +422,9 @@ def add_ConnectionHandlerServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class ConnectionHandler(object):
-    """Missing associated documentation comment in .proto file."""
+    """Deprecated service.
+    Please using `ConnectionUnaryHandler` to replace it
+    """
 
     @staticmethod
     def OnSocketCreated(request_iterator,
@@ -467,6 +506,230 @@ class ConnectionHandler(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.stream_unary(request_iterator, target, '/emqx.exproto.v1.ConnectionHandler/OnReceivedMessages',
+            exproto__pb2.ReceivedMessagesRequest.SerializeToString,
+            exproto__pb2.EmptySuccess.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+
+class ConnectionUnaryHandlerStub(object):
+    """This service is an optimization of `ConnectionHandler`.
+    In the initial version, we expected to use streams to improve the efficiency
+    of requests. But unfortunately, events between different streams are out of
+    order. it causes the `OnSocketCreated` event to may arrive later than `OnReceivedBytes`.
+
+    So we added the `ConnectionUnaryHandler` service since v4.3.21/v4.4.10 and forced
+    the use of Unary in it to avoid ordering problems.
+
+    Recommend using `ConnectionUnaryHandler` to replace `ConnectionHandler`
+    """
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.OnSocketCreated = channel.unary_unary(
+                '/emqx.exproto.v1.ConnectionUnaryHandler/OnSocketCreated',
+                request_serializer=exproto__pb2.SocketCreatedRequest.SerializeToString,
+                response_deserializer=exproto__pb2.EmptySuccess.FromString,
+                )
+        self.OnSocketClosed = channel.unary_unary(
+                '/emqx.exproto.v1.ConnectionUnaryHandler/OnSocketClosed',
+                request_serializer=exproto__pb2.SocketClosedRequest.SerializeToString,
+                response_deserializer=exproto__pb2.EmptySuccess.FromString,
+                )
+        self.OnReceivedBytes = channel.unary_unary(
+                '/emqx.exproto.v1.ConnectionUnaryHandler/OnReceivedBytes',
+                request_serializer=exproto__pb2.ReceivedBytesRequest.SerializeToString,
+                response_deserializer=exproto__pb2.EmptySuccess.FromString,
+                )
+        self.OnTimerTimeout = channel.unary_unary(
+                '/emqx.exproto.v1.ConnectionUnaryHandler/OnTimerTimeout',
+                request_serializer=exproto__pb2.TimerTimeoutRequest.SerializeToString,
+                response_deserializer=exproto__pb2.EmptySuccess.FromString,
+                )
+        self.OnReceivedMessages = channel.unary_unary(
+                '/emqx.exproto.v1.ConnectionUnaryHandler/OnReceivedMessages',
+                request_serializer=exproto__pb2.ReceivedMessagesRequest.SerializeToString,
+                response_deserializer=exproto__pb2.EmptySuccess.FromString,
+                )
+
+
+class ConnectionUnaryHandlerServicer(object):
+    """This service is an optimization of `ConnectionHandler`.
+    In the initial version, we expected to use streams to improve the efficiency
+    of requests. But unfortunately, events between different streams are out of
+    order. it causes the `OnSocketCreated` event to may arrive later than `OnReceivedBytes`.
+
+    So we added the `ConnectionUnaryHandler` service since v4.3.21/v4.4.10 and forced
+    the use of Unary in it to avoid ordering problems.
+
+    Recommend using `ConnectionUnaryHandler` to replace `ConnectionHandler`
+    """
+
+    def OnSocketCreated(self, request, context):
+        """-- socket layer
+
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def OnSocketClosed(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def OnReceivedBytes(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def OnTimerTimeout(self, request, context):
+        """-- pub/sub layer
+
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def OnReceivedMessages(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_ConnectionUnaryHandlerServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'OnSocketCreated': grpc.unary_unary_rpc_method_handler(
+                    servicer.OnSocketCreated,
+                    request_deserializer=exproto__pb2.SocketCreatedRequest.FromString,
+                    response_serializer=exproto__pb2.EmptySuccess.SerializeToString,
+            ),
+            'OnSocketClosed': grpc.unary_unary_rpc_method_handler(
+                    servicer.OnSocketClosed,
+                    request_deserializer=exproto__pb2.SocketClosedRequest.FromString,
+                    response_serializer=exproto__pb2.EmptySuccess.SerializeToString,
+            ),
+            'OnReceivedBytes': grpc.unary_unary_rpc_method_handler(
+                    servicer.OnReceivedBytes,
+                    request_deserializer=exproto__pb2.ReceivedBytesRequest.FromString,
+                    response_serializer=exproto__pb2.EmptySuccess.SerializeToString,
+            ),
+            'OnTimerTimeout': grpc.unary_unary_rpc_method_handler(
+                    servicer.OnTimerTimeout,
+                    request_deserializer=exproto__pb2.TimerTimeoutRequest.FromString,
+                    response_serializer=exproto__pb2.EmptySuccess.SerializeToString,
+            ),
+            'OnReceivedMessages': grpc.unary_unary_rpc_method_handler(
+                    servicer.OnReceivedMessages,
+                    request_deserializer=exproto__pb2.ReceivedMessagesRequest.FromString,
+                    response_serializer=exproto__pb2.EmptySuccess.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'emqx.exproto.v1.ConnectionUnaryHandler', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+ # This class is part of an EXPERIMENTAL API.
+class ConnectionUnaryHandler(object):
+    """This service is an optimization of `ConnectionHandler`.
+    In the initial version, we expected to use streams to improve the efficiency
+    of requests. But unfortunately, events between different streams are out of
+    order. it causes the `OnSocketCreated` event to may arrive later than `OnReceivedBytes`.
+
+    So we added the `ConnectionUnaryHandler` service since v4.3.21/v4.4.10 and forced
+    the use of Unary in it to avoid ordering problems.
+
+    Recommend using `ConnectionUnaryHandler` to replace `ConnectionHandler`
+    """
+
+    @staticmethod
+    def OnSocketCreated(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/emqx.exproto.v1.ConnectionUnaryHandler/OnSocketCreated',
+            exproto__pb2.SocketCreatedRequest.SerializeToString,
+            exproto__pb2.EmptySuccess.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def OnSocketClosed(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/emqx.exproto.v1.ConnectionUnaryHandler/OnSocketClosed',
+            exproto__pb2.SocketClosedRequest.SerializeToString,
+            exproto__pb2.EmptySuccess.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def OnReceivedBytes(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/emqx.exproto.v1.ConnectionUnaryHandler/OnReceivedBytes',
+            exproto__pb2.ReceivedBytesRequest.SerializeToString,
+            exproto__pb2.EmptySuccess.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def OnTimerTimeout(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/emqx.exproto.v1.ConnectionUnaryHandler/OnTimerTimeout',
+            exproto__pb2.TimerTimeoutRequest.SerializeToString,
+            exproto__pb2.EmptySuccess.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def OnReceivedMessages(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/emqx.exproto.v1.ConnectionUnaryHandler/OnReceivedMessages',
             exproto__pb2.ReceivedMessagesRequest.SerializeToString,
             exproto__pb2.EmptySuccess.FromString,
             options, channel_credentials,

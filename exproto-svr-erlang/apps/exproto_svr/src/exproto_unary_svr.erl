@@ -1,5 +1,5 @@
 %%--------------------------------------------------------------------
-%% Copyright (c) 2020 EMQ Technologies Co., Ltd. All Rights Reserved.
+%% Copyright (c) 2023 EMQ Technologies Co., Ltd. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
 %% limitations under the License.
 %%--------------------------------------------------------------------
 
--module(exproto_svr).
+-module(exproto_unary_svr).
 
--behavior(emqx_exproto_v_1_connection_handler_bhvr).
+-behavior(emqx_exproto_v_1_connection_unary_handler_bhvr).
 
 -export([ frame_connect/2
         , frame_connack/1
@@ -39,6 +39,8 @@
 %-define(LOG(Fmt, Args), io:format(standard_error, Fmt, Args)).
 -define(LOG(Fmt, Args), begin _ = Fmt, _ = Args, ok end).
 
+-define(TRACE(Req), ?LOG("RECV - ~s: ~p~n", [?FUNCTION_NAME, Req])).
+
 -define(CLIENT, emqx_exproto_v_1_connection_adapter_client).
 
 -define(send(Req),         ?CLIENT:send(Req, #{channel => ct_test_channel})).
@@ -59,71 +61,45 @@
 -define(TYPE_UNSUBACK,    8).
 -define(TYPE_DISCONNECT,  9).
 
--define(loop_recv_and_reply_empty_success(Stream),
-        ?loop_recv_and_reply_empty_success(Stream, fun(_) -> ok end)).
-
--define(loop_recv_and_reply_empty_success(Stream, Fun),
-        begin
-            LoopRecv = fun _Lp(_St) ->
-                case grpc_stream:recv(_St) of
-                    {more, _Reqs, _NSt} ->
-                        ?LOG("~s ~p: ~p~n", [datetime(),
-                                             ?FUNCTION_NAME, _Reqs]),
-                        Fun(_Reqs), _Lp(_NSt);
-                    {eos, _Reqs, _NSt} ->
-                        ?LOG("~s ~p: ~p~n", [datetime(),
-                                             ?FUNCTION_NAME, _Reqs]),
-                        Fun(_Reqs), _NSt
-                end
-            end,
-            NStream  = LoopRecv(Stream),
-            grpc_stream:reply(NStream, #{}),
-            {ok, NStream}
-        end).
-
-datetime() ->
-    {{Y,M,D}, {H,Mm,S}} = calendar:local_time(),
-    io_lib:format("~w-~w-~w ~w:~w:~w", [Y,M,D,H,Mm,S]).
-
 %%--------------------------------------------------------------------
-%% ConnectionHandler callbacks
+%% ConnectionUnaryHandler callbacks
 %%--------------------------------------------------------------------
 
--spec on_socket_created(grpc_stream:stream(), grpc:metadata())
-    -> {ok, grpc_stream:stream()}.
-on_socket_created(Stream, _Md) ->
-    ?loop_recv_and_reply_empty_success(Stream).
+-spec on_socket_created(emqx_exproto_pb:socket_created_request(), grpc:metadata())
+    -> {ok, emqx_exproto_pb:empty_success(), grpc:metadata()}
+     | {error, grpc_stream:error_response()}.
+on_socket_created(Req, _Md) ->
+    ?TRACE(Req),
+    {ok, #{}, _Md}.
 
--spec on_socket_closed(grpc_stream:stream(), grpc:metadata())
-    -> {ok, grpc_stream:stream()}.
-on_socket_closed(Stream, _Md) ->
-    ?loop_recv_and_reply_empty_success(Stream).
+-spec on_socket_closed(emqx_exproto_pb:socket_closed_request(), grpc:metadata())
+    -> {ok, emqx_exproto_pb:empty_success(), grpc:metadata()}
+     | {error, grpc_stream:error_response()}.
+on_socket_closed(Req, _Md) ->
+    ?TRACE(Req),
+    {ok, #{}, _Md}.
 
--spec on_received_bytes(grpc_stream:stream(), grpc:metadata())
-    -> {ok, grpc_stream:stream()}.
-on_received_bytes(Stream, _Md) ->
-    ?loop_recv_and_reply_empty_success(Stream,
-      fun(Reqs) ->
-        statistics(runtime),
-        statistics(wall_clock),
-        lists:foreach(
-          fun(#{conn := Conn, bytes := Bytes}) ->
-            Remain = get_conn_recv_buffer(Conn),
-            {NRemain, RawPackets} = parse_all_bytes(<<Remain/binary,
-                                                      Bytes/binary>>),
-            _ = put_conn_recv_buffer(Conn, NRemain),
-            lists:foreach(fun(RawPacket) ->
-                #{<<"type">> := Type} = Params
-                                      = jsx:decode(RawPacket, [return_maps]),
-                _ = handle_in(Conn, Type, Params)
-            end, RawPackets)
-          end, Reqs),
-          {_, Time1} = statistics(runtime),
-          {_, Time2} = statistics(wall_clock),
-          io:format("~w -- CPU time: ~s, Procs time: ~s\n",
-                    [length(Reqs), format_ts(Time1), format_ts(Time2)]),
-          ok
-      end).
+-spec on_received_bytes(emqx_exproto_pb:received_bytes_request(), grpc:metadata())
+    -> {ok, emqx_exproto_pb:empty_success(), grpc:metadata()}
+     | {error, grpc_stream:error_response()}.
+on_received_bytes(Req = #{conn := Conn, bytes := Bytes}, _Md) ->
+    ?TRACE(Req),
+    statistics(runtime),
+    statistics(wall_clock),
+    Remain = get_conn_recv_buffer(Conn),
+    {NRemain, RawPackets} = parse_all_bytes(<<Remain/binary,
+                                              Bytes/binary>>),
+    _ = put_conn_recv_buffer(Conn, NRemain),
+    lists:foreach(fun(RawPacket) ->
+        #{<<"type">> := Type} = Params
+                              = jsx:decode(RawPacket, [return_maps]),
+        _ = handle_in(Conn, Type, Params)
+            end, RawPackets),
+    {_, Time1} = statistics(runtime),
+    {_, Time2} = statistics(wall_clock),
+    ?LOG("Handle bytes consume CPU time: ~s, Procs time: ~s\n",
+         [format_ts(Time1), format_ts(Time2)]),
+    {ok, #{}, _Md}.
 
 format_ts(Ms) ->
     case Ms > 1000 of
@@ -151,31 +127,25 @@ parse_all_bytes(<<B, Remain/binary>>, Buf, Acc) ->
 parse_all_bytes(<<>>, Buf, Acc) ->
     {Buf, Acc}.
 
--spec on_timer_timeout(grpc_stream:stream(), grpc:metadata())
-    -> {ok, grpc_stream:stream()}.
-on_timer_timeout(Stream, _Md) ->
-    ?loop_recv_and_reply_empty_success(Stream,
-      fun(Reqs) ->
-        lists:foreach(
-          fun(#{conn := Conn, type := 'KEEPALIVE'}) ->
-            ?LOG("Close this connection ~p due to keepalive timeout", [Conn]),
-            handle_out(Conn, ?TYPE_DISCONNECT),
-            ?close(#{conn => Conn})
-          end, Reqs)
-      end).
+-spec on_timer_timeout(emqx_exproto_pb:timer_timeout_request(), grpc:metadata())
+    -> {ok, emqx_exproto_pb:empty_success(), grpc:metadata()}
+     | {error, grpc_stream:error_response()}.
+on_timer_timeout(Req = #{conn := Conn, type := 'KEEPALIVE'}, _Md) ->
+    ?TRACE(Req),
+    ?LOG("Close this connection ~p due to keepalive timeout", [Conn]),
+    handle_out(Conn, ?TYPE_DISCONNECT),
+    ?close(#{conn => Conn}),
+    {ok, #{}, _Md}.
 
--spec on_received_messages(grpc_stream:stream(), grpc:metadata())
-    -> {ok, grpc_stream:stream()}.
-on_received_messages(Stream, _Md) ->
-    ?loop_recv_and_reply_empty_success(Stream,
-      fun(Reqs) ->
-        lists:foreach(
-          fun(#{conn := Conn, messages := Messages}) ->
-            lists:foreach(fun(Message) ->
-                handle_out(Conn, ?TYPE_PUBLISH, Message)
-            end, Messages)
-          end, Reqs)
-      end).
+-spec on_received_messages(emqx_exproto_pb:received_messages_request(), grpc:metadata())
+    -> {ok, emqx_exproto_pb:empty_success(), grpc:metadata()}
+     | {error, grpc_stream:error_response()}.
+on_received_messages(Req = #{conn := Conn, messages := Messages}, _Md) ->
+    ?TRACE(Req),
+    lists:foreach(fun(Message) ->
+        handle_out(Conn, ?TYPE_PUBLISH, Message)
+    end, Messages),
+    {ok, #{}, _Md}.
 
 %%--------------------------------------------------------------------
 %% The Protocol Example:
