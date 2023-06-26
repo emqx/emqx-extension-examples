@@ -40,7 +40,7 @@ class ExProtoConnectionUnaryHandler(exproto_pb2_grpc.ConnectionUnaryHandlerServi
         # Note2: The username and password can be used to authenticate the client, if the username and password
         #        is not correct, the AuthenticateResponse.code will be set to 5 (PERMISSION_DENY)
         print("[request ] Send AuthenticateRequest to reigster client to ExProto gateway: clientid=test")
-        info = exproto_pb2.ClientInfo(clientid="test", username="test", proto_name="exproto-echo-svr", proto_ver="1")
+        info = exproto_pb2.ClientInfo(clientid="test", username="test", proto_name="exproto-echo-svr", proto_ver="1.0")
         auth = exproto_pb2.AuthenticateRequest(clientinfo=info, password="password", conn=request.conn)
         auth_response = self.stub.Authenticate(auth)
         print("[response] Authenticate response: %s" % str(auth_response.code))

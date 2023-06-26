@@ -55,7 +55,7 @@ func (s *server) OnSocketCreated(ctx context.Context, in *pb.SocketCreatedReques
 		Clientid:  "test",
 		Username:  "test",
 		ProtoName: "exproto-echo-svr",
-		ProtoVer:  "1",
+		ProtoVer:  "1.0",
 	}
 	auth := pb.AuthenticateRequest{
 		Conn:       in.Conn,
