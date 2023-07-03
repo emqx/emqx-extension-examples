@@ -6,7 +6,7 @@ This is a demo server written in python for exhook
 
 - [Python](https://www.python.org) 3.5 or higher
 - pip version 9.0.1 or higher
-- EMQX 5.0 or above
+- EMQX 5.0 or higher
 
 ### Install gRPC and gRPC tools
 
@@ -20,14 +20,19 @@ python -m pip install grpcio-tools
 ## Test it with EMQX
 
 1. Make sure that EMQX is version 5.0 or above.
-2. Run the ExHook server by the following command:
+
+2. Start this ExHook Demo server by the following command:
 ```
 python exhook_server.py
 ```
-3. Add an ExHook Server through the EMQX Dashboard and ensure that its address points to this example program. you can refer to the [Offcial Documentation](https://docs.emqx.com/en/enterprise/v5.1/extensions/exhook.html)
 
-4. Observing this example program, it will print that it has received the `OnProviderLoaded` callback, indicating that they have successfully established a connection.
+3. Configure ExHook by the EMQX Dashboard for this Demo server and ensure that its address points
+   to this example program.
+   For the detailed docs, refer to the
+   [Offcial Documentation](https://docs.emqx.com/en/enterprise/v5.1/extensions/exhook.html)
 
+4. Observing this example program, it will print that it has received the `OnProviderLoaded`
+   callback, indicating that they have successfully established a connection. e.g:
 ```
 OnProviderLoaded: broker {
   version: "5.1.0"
@@ -49,16 +54,16 @@ OnClientConnected: ...
 OnClientConnack: ...
 ```
 
-At this point, the example program has successfully integrated with EMQX.
+At this point, the example program has successfully integrated with EMQX and received all client
+events from EMQX.
 
 ## Modify the exhook_server.py to deny all MQTT connecting request
 
-In this section, we will take the `OnClientAuthenticate` callback as an example and
-attempt to modify its implementation in `exhook_server.py` to deny some MQTT client
-connections.
+In this section, we will take the `OnClientAuthenticate` callback as an example and attempt to
+modify its implementation in `exhook_server.py` to deny some MQTT client connections.
 
-1. Modify the `OnClientAuthenticate` function in `exhook_server.py` to reject all
-   client logins with the username "baduser".
+1. Modify the `OnClientAuthenticate` function in `exhook_server.py` to reject all client logins
+   with the username "baduser".
    The complete implementation of the modified function is as follows:
 ```
 def OnClientAuthenticate(self, request, context):
@@ -75,7 +80,8 @@ def OnClientAuthenticate(self, request, context):
 
 3. Set the username of the MQTT client to "baduser" and connect to EMQX to test.
 
-4. It can be observed that the client is unable to connect due to authentication failure, and the `exhook_server.py` will also output similar logs like this:
+4. It can be observed that the client is unable to connect due to authentication failure, and the
+   `exhook_server.py` will also output similar logs like this:
 ```
 OnClientConnect: ...
 OnClientAuthenticate: ...
@@ -83,6 +89,9 @@ OnClientConnack: ...
 result_code: "not_authorized"
 ...
 ```
+
+Finally, a simple custom authentication based on ExHooK is completed.
+
 
 ## Update the exhook.proto to latest version
 
