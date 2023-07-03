@@ -72,7 +72,11 @@ class HookProvider(exhook_pb2_grpc.HookProviderServicer):
 
     def OnClientAuthenticate(self, request, context):
         print("OnClientAuthenticate:", request)
-        reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", bool_result=True)
+        clientinfo = request.clientinfo
+        if clientinfo.username == "baduser":
+            reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", bool_result=False)
+        else:
+            reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", bool_result=True)
         return reply
 
     def OnClientAuthorize(self, request, context):
