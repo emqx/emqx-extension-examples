@@ -116,23 +116,48 @@ class HookProvider(exhook_pb2_grpc.HookProviderServicer):
         print("OnSessionTerminated:", request)
         return exhook_pb2.EmptySuccess()
 
+
+    ## case1: stop and then publish the hardcoded 't/d' messages
+    ##
     def OnMessagePublish(self, request, context):
         print("OnMessagePublish:", request)
         nmsg = request.message
-        nmsg.payload = b"hardcode payload by exhook-svr-python :)"
+        nmsg.payload = b"{\"mgs\": \"hardcode payload by exhook-svr-python :)\"}"
 
         reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", message=nmsg)
         return reply
 
+
     ## case2: stop publish the 't/d' messages
-    #def OnMessagePublish(self, request, context):
+    ##
+    # def OnMessagePublish(self, request, context):
+    #     print("OnMessagePublish:", request)
+    #     nmsg = request.message
+    #     if nmsg.topic == 't/banned_topic_by_exhook':
+    #         nmsg.payload = b""
+    #         nmsg.headers['allow_publish'] = b"false"
+
+    #     reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", message=nmsg)
+    #     return reply
+
+
+    ## case3: stop publish the 't/d' messages
+    ##        and republish a new message to 't/new' topic
+    ##        to let rule engine to process it
+    ##
+    # def OnMessagePublish(self, request, context):
+    #    print("OnMessagePublish:", request)
     #    nmsg = request.message
-    #    if nmsg.topic == 't/d':
-    #        nmsg.payload = b""
+    #    if nmsg.topic == 't/raw_msg':
+    #        nmsg.topic = 't/exhook_parsed'
+    #        nmsg.payload = b"{\"mgs\": \"hardcode payload by exhook-svr-python :)\"}"
+    #        # set to true to continue publish the message with 't/raw_msg'
     #        nmsg.headers['allow_publish'] = b"false"
-    #
-    #    reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", message=nmsg)
+    #        reply = exhook_pb2.ValuedResponse(type="STOP_AND_REPUBLISH", message=nmsg)
+    #    else:
+    #        reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", message=nmsg)
     #    return reply
+
 
     def OnMessageDelivered(self, request, context):
         print("OnMessageDelivered:", request)
