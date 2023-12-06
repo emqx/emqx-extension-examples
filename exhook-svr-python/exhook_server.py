@@ -15,6 +15,7 @@
 
 from concurrent import futures
 import logging
+import inspect
 from multiprocessing.sharedctypes import Value
 
 import grpc
@@ -25,7 +26,7 @@ import exhook_pb2_grpc
 class HookProvider(exhook_pb2_grpc.HookProviderServicer):
 
     def OnProviderLoaded(self, request, context):
-        print("OnProviderLoaded:", request)
+        print_req(request)
         specs = [exhook_pb2.HookSpec(name="client.connect"),
                  exhook_pb2.HookSpec(name="client.connack"),
                  exhook_pb2.HookSpec(name="client.connected"),
@@ -51,73 +52,73 @@ class HookProvider(exhook_pb2_grpc.HookProviderServicer):
         return exhook_pb2.LoadedResponse(hooks=specs)
 
     def OnProviderUnloaded(self, request, context):
-        print("OnProviderUnloaded:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnClientConnect(self, request, context):
-        print("OnClientConnect:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnClientConnack(self, request, context):
-        print("OnClientConnack:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnClientConnected(self, request, context):
-        print("OnClientConnected:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnClientDisconnected(self, request, context):
-        print("OnClientDisconnected:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnClientAuthenticate(self, request, context):
-        print("OnClientAuthenticate:", request)
+        print_req(request)
         reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", bool_result=True)
         return reply
 
     def OnClientAuthorize(self, request, context):
-        print("OnClientAuthorize:", request)
+        print_req(request)
         reply = exhook_pb2.ValuedResponse(type="STOP_AND_RETURN", bool_result=True)
         return reply
 
     def OnClientSubscribe(self, request, context):
-        print("OnClientSubscribe:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnClientUnsubscribe(self, request, context):
-        print("OnClientUnsubscribe:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnSessionCreated(self, request, context):
-        print("OnSessionCreated:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnSessionSubscribed(self, request, context):
-        print("OnSessionSubscribed:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnSessionUnsubscribed(self, request, context):
-        print("OnSessionUnsubscribed:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnSessionResumed(self, request, context):
-        print("OnSessionResumed:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnSessionDiscarded(self, request, context):
-        print("OnSessionDiscarded:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnSessionTakenover(self, request, context):
-        print("OnSessionTakenover:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnSessionTerminated(self, request, context):
-        print("OnSessionTerminated:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnMessagePublish(self, request, context):
-        print("OnMessagePublish:", request)
+        print_req(request)
         nmsg = request.message
         nmsg.payload = b"hardcode payload by exhook-svr-python :)"
 
@@ -125,7 +126,9 @@ class HookProvider(exhook_pb2_grpc.HookProviderServicer):
         return reply
 
     ## case2: stop publish the 't/d' messages
+    ##
     #def OnMessagePublish(self, request, context):
+    #    print_req(request)
     #    nmsg = request.message
     #    if nmsg.topic == 't/d':
     #        nmsg.payload = b""
@@ -135,15 +138,15 @@ class HookProvider(exhook_pb2_grpc.HookProviderServicer):
     #    return reply
 
     def OnMessageDelivered(self, request, context):
-        print("OnMessageDelivered:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnMessageDropped(self, request, context):
-        print("OnMessageDropped:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
     def OnMessageAcked(self, request, context):
-        print("OnMessageAcked:", request)
+        print_req(request)
         return exhook_pb2.EmptySuccess()
 
 def serve():
@@ -156,6 +159,19 @@ def serve():
 
     server.wait_for_termination()
 
+
+def print_req(content):
+    print("\033[1;32m\u2714 ", "\033[0m\033[1;32m==================\033[0m")
+    print(highlight(inspect.currentframe().f_back.f_code.co_name))
+    print(content)
+    print("\n")
+
+def highlight(content):
+    if isinstance(content, str):
+        content1 = content
+    else:
+        content1 = str(content)
+    return "\033[0;33m" + content1 + "\033[0m"
 
 if __name__ == '__main__':
     logging.basicConfig()
