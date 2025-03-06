@@ -16,7 +16,7 @@
 
 -module(exhook_svr).
 
--behavior(emqx_exhook_v_1_hook_provider_bhvr).
+-behavior(emqx_exhook_v_3_hook_provider_bhvr).
 
 %% gRPC server HookProvider callbacks
 -export([ on_provider_loaded/2
@@ -112,7 +112,8 @@ on_client_disconnected(_Req, Md) ->
      | {error, grpc_cowboy_h:error_response()}.
 on_client_authenticate(_Req, Md) ->
     ets:update_counter(exhook_stats, ?FUNCTION_NAME, {2, 1}, {?FUNCTION_NAME, 0}),
-    {ok, #{type => 'STOP_AND_RETURN', value => {bool_result, true}}, Md}.
+    %%{ok, #{type => 'STOP_AND_RETURN', value => {bool_result, true}}, Md}.
+    {ok, #{type => 'IGNORE'}, Md}.
 
 -spec on_client_authorize(emqx_exhook_pb:client_authorize_request(), grpc:metadata())
     -> {ok, emqx_exhook_pb:valued_response(), grpc:metadata()}
