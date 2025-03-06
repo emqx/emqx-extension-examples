@@ -280,6 +280,8 @@ impl pb::hook_provider_server::HookProvider for HookProviderServer {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "0.0.0.0:9000".parse()?;
 
+    println!("Listene on 0.0.0.0:9000...");
+
     let server = HookProviderServer {};
     Server::builder()
         .add_service(pb::hook_provider_server::HookProviderServer::new(server))

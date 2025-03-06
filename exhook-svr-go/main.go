@@ -16,7 +16,7 @@ const (
 
 var cnter *utils.Counter = utils.NewCounter(0, 100)
 
-// server is used to implement emqx_exhook_v1.s *server
+// server is used to implement emqx_exhook_v3.s *server
 type server struct {
 	pb.UnimplementedHookProviderServer
 }
