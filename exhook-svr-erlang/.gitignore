@@ -5,5 +5,3 @@ apps/exhook_svr/src/emqx_exhook_v_1_hook_provider_client.erl
 apps/exhook_svr/src/emqx_exhook_v_1_hook_provider_bhvr.erl
 apps/exhook_svr/src/emqx_exhook_v_2_hook_provider_client.erl
 apps/exhook_svr/src/emqx_exhook_v_2_hook_provider_bhvr.erl
-apps/exhook_svr/src/emqx_exhook_v_3_hook_provider_client.erl
-apps/exhook_svr/src/emqx_exhook_v_3_hook_provider_bhvr.erl
