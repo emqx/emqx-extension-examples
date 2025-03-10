@@ -12,7 +12,7 @@ use tonic::{transport::Server, Request, Response, Status};
 type HookProviderResult<T> = Result<Response<T>, Status>;
 
 pub mod pb {
-    tonic::include_proto!("emqx.exhook.v2");
+    tonic::include_proto!("emqx.exhook.v3");
 }
 
 #[derive(Debug)]
@@ -278,7 +278,9 @@ impl pb::hook_provider_server::HookProvider for HookProviderServer {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let addr = "0.0.0.0:5001".parse()?;
+    let addr = "0.0.0.0:9000".parse()?;
+
+    println!("Listene on 0.0.0.0:9000...");
 
     let server = HookProviderServer {};
     Server::builder()
